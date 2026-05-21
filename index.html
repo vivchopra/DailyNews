@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-  <meta name="theme-color" content="#3B82F6"/>
+  <meta name="theme-color" content="#10B981"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="MarketBrief"/>
@@ -12,10 +12,9 @@
   <title>India Market Intelligence</title>
 <style>
 :root{
-  --bg:#050505;--surf:#0a0a0a;--surf2:#0f0f0f;
-  --b1:#161616;--b2:#1e1e1e;
+  --bg:#050505;--surf:#0a0a0a;--b1:#161616;--b2:#1e1e1e;
   --tx:#ede8e0;--mu:#555;--di:#2a2a2a;
-  --blue:#3B82F6;--green:#4ade80;--red:#f87171;
+  --acc:#10B981;--blue:#3B82F6;--green:#4ade80;--red:#f87171;
   --yel:#fbbf24;--teal:#2DD4BF;--ora:#FB923C;
   --safe:env(safe-area-inset-top,0px);
 }
@@ -29,39 +28,52 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:Georgia,s
 #app-title{font-size:17px;font-weight:400;letter-spacing:-0.02em}
 #app-sub{font-size:8px;color:var(--di);font-family:monospace;letter-spacing:.2em;margin-top:2px}
 #last-run{font-size:8px;color:#1a3a1a;font-family:monospace;margin-top:2px}
-#run-btn{padding:8px 14px;border-radius:4px;border:1px solid var(--blue);background:linear-gradient(135deg,#1e3a5f,var(--blue));color:#fff;font-size:10px;font-family:monospace;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .2s}
+#run-btn{padding:8px 14px;border-radius:4px;border:1px solid var(--acc);background:linear-gradient(135deg,#064e3b,var(--acc));color:#fff;font-size:10px;font-family:monospace;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap;flex-shrink:0}
 #run-btn:disabled{background:#111;border-color:#1a1a1a;color:#333;cursor:not-allowed}
 
 /* PROGRESS */
 #prog-wrap{margin-bottom:9px}
 #prog-row{display:flex;justify-content:space-between;margin-bottom:3px}
-#prog-label,#prog-count{font-size:8px;color:var(--mu);font-family:monospace;letter-spacing:.12em}
+#prog-lbl,#prog-cnt{font-size:8px;color:var(--mu);font-family:monospace;letter-spacing:.1em}
 #prog-track{height:2px;background:#111;border-radius:2px;overflow:hidden}
-#prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#8B5CF6);border-radius:2px;transition:width .4s}
+#prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--blue));border-radius:2px;transition:width .4s}
 
 /* FILTERS */
 #filters{display:flex;gap:4px;flex-wrap:wrap}
-.fbtn{padding:3px 9px;border-radius:3px;border:1px solid var(--b1);background:var(--surf);color:var(--di);font-size:8px;font-family:monospace;letter-spacing:.12em;font-weight:700;cursor:pointer;transition:all .15s}
-.fbtn.on{background:#1e3a5f;color:var(--blue);border-color:var(--blue)}
-.fbtn.on.pos{background:#052e16;color:var(--green);border-color:#166534}
-.fbtn.on.neg{background:#450a0a;color:var(--red);border-color:#991b1b}
-.fbtn.on.mix{background:#1c1304;color:var(--yel);border-color:#92400e}
+.fbtn{padding:3px 9px;border-radius:3px;border:1px solid var(--b1);background:var(--surf);color:var(--di);font-size:8px;font-family:monospace;letter-spacing:.1em;font-weight:700;cursor:pointer;transition:all .15s}
+.fbtn.on{background:#064e3b;color:var(--acc);border-color:var(--acc)}
+.fbtn.pos.on{background:#052e16;color:var(--green);border-color:#166534}
+.fbtn.neg.on{background:#450a0a;color:var(--red);border-color:#991b1b}
+.fbtn.mix.on{background:#1c1304;color:var(--yel);border-color:#92400e}
 
 /* BANNERS */
 .banner{display:none;align-items:center;gap:8px;padding:9px 14px;border-radius:5px;margin-bottom:7px}
 .banner.show{display:flex}
+#key-banner{background:#0d1f0d;border:1px solid #166534;flex-direction:column;align-items:stretch;gap:8px}
+#key-banner.show{display:flex}
+#key-title{font-size:9px;color:var(--acc);font-family:monospace;letter-spacing:.2em;margin-bottom:2px}
+#key-desc{font-size:11px;color:#666;font-family:system-ui;line-height:1.5}
+#key-steps{font-size:10px;color:#555;font-family:system-ui;line-height:1.8}
+#key-steps a{color:var(--acc);text-decoration:none}
+#key-row{display:flex;gap:7px}
+#key-input{flex:1;background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:7px 10px;color:var(--tx);font-family:monospace;font-size:11px;outline:none}
+#key-input:focus{border-color:var(--acc)}
+#key-save{padding:7px 14px;background:#064e3b;color:var(--acc);border:1px solid var(--acc);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;white-space:nowrap;font-weight:700}
+#key-status{font-size:9px;font-family:monospace}
+.kok{color:var(--green)}.kno{color:var(--red)}
+
 #notif-banner{background:#1e3a1e;border:1px solid #166534}
 #notif-text{font-size:11px;color:var(--green);font-family:system-ui;flex:1}
-#notif-btn{padding:4px 10px;background:#052e16;color:var(--green);border:1px solid #166534;border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0}
+#notif-btn{padding:4px 10px;background:#052e16;color:var(--green);border:1px solid #166534;border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0;font-weight:700}
 #inst-banner{background:#1e3a5f;border:1px solid var(--blue)}
 #inst-text{font-size:11px;color:#93C5FD;font-family:system-ui;flex:1}
-#inst-btn{padding:4px 10px;background:#1e3a5f;color:var(--blue);border:1px solid var(--blue);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0}
+#inst-btn{padding:4px 10px;background:#1e3a5f;color:var(--blue);border:1px solid var(--blue);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0;font-weight:700}
 
 /* SCHEDULE */
 #sched-row{display:none;gap:6px;flex-wrap:wrap;margin-bottom:7px}
-.sched-item{display:flex;align-items:center;gap:5px;padding:4px 9px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px}
-.sched-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pd 2s infinite}
-.sched-lbl{font-size:9px;color:#444;font-family:monospace}
+.si{display:flex;align-items:center;gap:5px;padding:4px 9px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px}
+.sd{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:pd 2s infinite}
+.sl{font-size:9px;color:#444;font-family:monospace}
 @keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* SUMMARY */
@@ -73,11 +85,11 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:Georgia,s
 
 /* CATEGORY */
 .cat{background:var(--surf);border:1px solid var(--b1);border-radius:5px;margin-bottom:5px;overflow:hidden;transition:border-color .2s}
-.cat-hdr{display:flex;align-items:center;gap:9px;padding:11px 13px;cursor:pointer}
+.cat-hdr{display:flex;align-items:center;gap:9px;padding:11px 13px}
 .cat-ico{width:34px;height:34px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .cat-ttl{font-size:12px;font-weight:600;color:var(--tx)}
 .cat-sub{font-size:8px;color:#2a2a2a;font-family:system-ui;margin-top:1px}
-.cat-meta{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.cat-meta{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 .cat-sum{padding:7px 13px;font-size:11px;color:#666;line-height:1.6;font-family:system-ui;font-style:italic;border-top:1px solid #111;border-bottom:1px solid #111}
 .cat-items{padding:9px 11px}
 .chev{color:#2a2a2a;font-size:10px}
@@ -88,7 +100,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:Georgia,s
 .bdg-neg{background:#450a0a;color:var(--red);border-color:#991b1b}
 .bdg-mix{background:#1c1304;color:var(--yel);border-color:#92400e}
 .bdg-neu{background:#111827;color:#9ca3af;border-color:#374151}
-.ld{color:var(--blue);font-family:monospace;font-size:8px}
+.ld{color:var(--acc);font-family:monospace;font-size:8px}
 .er{color:var(--red);font-family:monospace;font-size:8px}
 .nn{color:#222;font-family:monospace;font-size:8px}
 .cp{color:var(--green);font-family:monospace;font-size:9px;font-weight:700}
@@ -118,220 +130,275 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:Georgia,s
 .ipills{display:flex;flex-wrap:wrap;gap:4px}
 .ip{background:#111;border:1px solid #1e1e1e;border-radius:3px;padding:3px 7px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .itkr{font-size:11px;color:#ede8e0;font-family:monospace;font-weight:700}
-.iname{font-size:8px;color:#444;font-family:system-ui}
 .ireason{font-size:9px;color:#555;font-family:system-ui}
+
+/* ERROR CARD */
+.err-card{background:#1a0a0a;border:1px solid #3a1a1a;border-radius:4px;padding:10px 12px;font-size:11px;color:#f87171;font-family:system-ui;line-height:1.5}
 
 /* BODY */
 #body{padding:10px 12px 80px;max-width:680px;margin:0 auto}
-#empty{text-align:center;padding:50px 20px;color:#1e1e1e;font-family:monospace;font-size:11px}
+#empty{text-align:center;padding:50px 20px;color:#1e1e1e;font-family:monospace;font-size:11px;line-height:1.8}
 #footer{padding:14px;text-align:center;border-top:1px solid #111;margin-top:14px}
 #footer p{font-size:8px;color:#1a1a1a;font-family:monospace;letter-spacing:.1em}
 
-/* API KEY INPUT */
-#api-section{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:12px 14px;margin-bottom:10px}
-#api-label{font-size:9px;color:#555;font-family:monospace;letter-spacing:.2em;margin-bottom:6px}
-#api-row{display:flex;gap:8px}
-#api-input{flex:1;background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:7px 10px;color:var(--tx);font-family:monospace;font-size:11px;outline:none}
-#api-input:focus{border-color:var(--blue)}
-#api-save{padding:7px 14px;background:#1e3a5f;color:var(--blue);border:1px solid var(--blue);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;white-space:nowrap}
-#api-status{font-size:9px;font-family:monospace;margin-top:5px}
-.api-ok{color:var(--green)}.api-no{color:var(--red)}
-
-@media(min-width:600px){
-  #app-title{font-size:20px}
-  .nhl{font-size:12px}
-  #body{padding:14px 18px 80px}
-}
+/* FREE BADGE */
+#free-badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;background:#064e3b;border:1px solid var(--acc);border-radius:10px;font-size:8px;color:var(--acc);font-family:monospace;font-weight:700;letter-spacing:.1em;margin-left:8px;vertical-align:middle}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div id="hdr">
   <div id="hdr-row">
     <div>
-      <div style="font-size:8px;color:#3B82F6;font-family:monospace;letter-spacing:.3em;margin-bottom:3px">🇮🇳 INDIA MARKET INTELLIGENCE</div>
+      <div style="font-size:8px;color:#10B981;font-family:monospace;letter-spacing:.25em;margin-bottom:3px">
+        🇮🇳 INDIA MARKET INTELLIGENCE
+        <span id="free-badge">✓ FREE</span>
+      </div>
       <div id="app-title">Daily Briefing</div>
-      <div id="app-sub">NSE · BSE · LAST 24H · 12 CATEGORIES</div>
+      <div id="app-sub">NSE · BSE · LAST 24H · 12 CATEGORIES · POWERED BY GEMINI</div>
       <div id="last-run"></div>
     </div>
     <button id="run-btn" onclick="runAll()">↺ RUN NOW</button>
   </div>
   <div id="prog-wrap">
-    <div id="prog-row"><span id="prog-label">READY</span><span id="prog-count">0/12</span></div>
+    <div id="prog-row"><span id="prog-lbl">READY</span><span id="prog-cnt">0/12</span></div>
     <div id="prog-track"><div id="prog-fill"></div></div>
   </div>
   <div id="filters">
-    <button class="fbtn on" onclick="setFilter('ALL')">ALL</button>
-    <button class="fbtn pos" onclick="setFilter('POSITIVE')">▲ POS</button>
-    <button class="fbtn neg" onclick="setFilter('NEGATIVE')">▼ NEG</button>
-    <button class="fbtn mix" onclick="setFilter('MIXED')">◆ MIX</button>
+    <button class="fbtn on"     onclick="setFilter('ALL')">ALL</button>
+    <button class="fbtn pos"    onclick="setFilter('POSITIVE')">▲ POS</button>
+    <button class="fbtn neg"    onclick="setFilter('NEGATIVE')">▼ NEG</button>
+    <button class="fbtn mix"    onclick="setFilter('MIXED')">◆ MIX</button>
   </div>
 </div>
 
-<!-- BODY -->
 <div id="body">
 
-  <!-- API KEY SECTION -->
-  <div id="api-section">
-    <div id="api-label">ANTHROPIC API KEY (stored locally, never sent anywhere else)</div>
-    <div id="api-row">
-      <input id="api-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false"/>
-      <button id="api-save" onclick="saveKey()">SAVE KEY</button>
+  <!-- API KEY SETUP -->
+  <div id="key-banner" class="banner show">
+    <div id="key-title">🔑 ONE-TIME SETUP — GEMINI API KEY (100% FREE)</div>
+    <div id="key-desc">Get your free Gemini API key — no credit card, no payment, 1500 free requests/day.</div>
+    <div id="key-steps">
+      1. Go to <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br/>
+      2. Sign in with your Google account<br/>
+      3. Click <strong style="color:#10B981">Create API Key</strong><br/>
+      4. Copy the key and paste it below
     </div>
-    <div id="api-status"></div>
+    <div id="key-row">
+      <input id="key-input" type="password" placeholder="AIza..." autocomplete="off" spellcheck="false" oninput="clearKeyStatus()"/>
+      <button id="key-save" onclick="saveKey()">SAVE KEY</button>
+    </div>
+    <div id="key-status"></div>
   </div>
 
   <div id="inst-banner" class="banner">
-    <span id="inst-text">📲 Install as app — Add to Home Screen for native experience</span>
+    <span id="inst-text">📲 Install as app — Add to Home Screen</span>
     <button id="inst-btn" onclick="triggerInstall()">INSTALL</button>
   </div>
 
   <div id="notif-banner" class="banner">
-    <span id="notif-text">🔔 Enable notifications for 6 AM & 3 PM IST daily alerts</span>
+    <span id="notif-text">🔔 Enable alerts for 6 AM & 3 PM IST daily</span>
     <button id="notif-btn" onclick="reqNotif()">ENABLE</button>
   </div>
 
   <div id="sched-row">
-    <div class="sched-item"><div class="sched-dot"></div><span class="sched-lbl">⏰ 6:00 AM IST</span></div>
-    <div class="sched-item"><div class="sched-dot"></div><span class="sched-lbl">⏰ 3:00 PM IST</span></div>
+    <div class="si"><div class="sd"></div><span class="sl">⏰ 6:00 AM IST — AUTO BRIEFING</span></div>
+    <div class="si"><div class="sd"></div><span class="sl">⏰ 3:00 PM IST — AUTO BRIEFING</span></div>
   </div>
 
   <div id="summary"></div>
   <div id="cats"></div>
-  <div id="empty">Enter your Anthropic API key above, then tap RUN NOW.</div>
+  <div id="empty">
+    Complete the one-time setup above, then tap <strong style="color:#10B981">RUN NOW</strong>.<br/><br/>
+    <span style="color:#1a3a1a">Free · No credit card · 1500 requests/day</span>
+  </div>
   <div id="footer"><p>NOT INVESTMENT ADVICE · INFORMATIONAL ONLY · DATA FROM PUBLIC SOURCES</p></div>
 </div>
 
 <script>
-// ── CATEGORIES ───────────────────────────────────────────────────────────────
-const CATS=[
-  {id:'monetary',  label:'Monetary Policy',              icon:'🏦',color:'#60A5FA',dim:'#1e3a5f',focus:'RBI MPC rate decisions CRR SLR OMO VRRR liquidity, US Fed FOMC decision dot plot, BOJ ECB central bank policy, India bond yields G-sec, banking system liquidity surplus deficit'},
-  {id:'geo',       label:'Geopolitical',                 icon:'🌐',color:'#F87171',dim:'#5f1e1e',focus:'India Pakistan military diplomatic events ceasefire, India China LAC border, Middle East conflict oil supply Hormuz, US India trade tariff relations, geopolitical risk Indian markets rupee'},
-  {id:'macro_in',  label:'India Macro Data',             icon:'📊',color:'#A78BFA',dim:'#3b1f5f',focus:'India CPI inflation MoSPI print, IIP industrial production, GDP growth estimate, PMI manufacturing services S&P Global, trade deficit, INR rupee RBI reference rate, FX reserves, fiscal deficit'},
-  {id:'macro_gl',  label:'Global Macro',                 icon:'🌍',color:'#22D3EE',dim:'#1e4a5f',focus:'US CPI inflation BLS print, US non farm payrolls jobs data, China NBS PMI Caixin PMI, DXY dollar index, US 10 year treasury yield, emerging market FII flows, global recession risk'},
-  {id:'govt',      label:'Govt Policy & Budget',         icon:'🏛️',color:'#FBBF24',dim:'#5f3d1e',focus:'CCEA cabinet approvals India today, GST council rate changes, CBIC customs import duty notifications gazette, PLI scheme disbursements ministry, DIPAM disinvestment OFS announcement, MSP agricultural minimum support price'},
-  {id:'filings',   label:'BSE/NSE Filings',              icon:'📋',color:'#34D399',dim:'#1e5f3a',focus:'BSE NSE board meeting outcome today, SAST promoter pledge creation invocation disclosure, insider trading PIT UPSI, Regulation 30 material event order win, shareholding pattern quarterly change, credit rating exchange disclosure LODR'},
-  {id:'corporate', label:'Corporate Results & Guidance', icon:'🎙️',color:'#FB923C',dim:'#5f2e1e',focus:'India quarterly earnings results Q4 FY26 today, concall transcript management guidance language, order book wins losses capex, revenue margin EBITDA guidance cut raise, CFO CEO management change, auditor qualification emphasis'},
-  {id:'commodity', label:'Commodities',                  icon:'🛢️',color:'#A3E635',dim:'#2e4a1e',focus:'Crude oil Brent WTI price OPEC production, gold silver MCX price, base metals copper aluminium zinc steel, agri commodity wheat rice cotton sugar, coal natural gas LNG price India'},
-  {id:'fii',       label:'FII/DII Flows',                icon:'💰',color:'#F472B6',dim:'#5f1e3a',focus:'FII DII net flows India equity debt today, Nifty Sensex Bank Nifty index move, FII F&O futures long short ratio NSE, block deals bulk deals, MSCI index rebalancing quarterly, mutual fund SIP flows data'},
-  {id:'regulatory',label:'Regulatory & SEBI',            icon:'⚖️',color:'#C084FC',dim:'#3a1e5f',focus:'SEBI enforcement order adjudication show cause notice, CRISIL ICRA CARE India Ratings credit rating downgrade upgrade watch negative Issuer Not Cooperating, RBI PCA banking action, NCLT insolvency petition filed listed company'},
-  {id:'sector',    label:'Sector & Industry News',       icon:'🏭',color:'#FB7185',dim:'#5f1e2e',focus:'India banking NPA GNPA asset quality credit growth, IT sector deal TCS Infosys headcount visa H1B, pharma USFDA inspection warning letter import alert, auto monthly sales EV, infrastructure order inflow L&T, real estate launches, FMCG rural demand'},
-  {id:'hidden',    label:'Hidden & Between-the-Lines',   icon:'🔍',color:'#2DD4BF',dim:'#1e5f4a',focus:'Promoter pledge invocation India stock, auditor resignation replacement listed company, NCLT insolvency petition new filing, MCA charge creation satisfaction undisclosed debt, related party transaction new vendor customer, SEBI consent settlement order quiet, Issuer Not Cooperating INC rating'},
+// ── CATEGORIES ────────────────────────────────────────────────────────────────
+const CATS = [
+  {id:'monetary',   label:'Monetary Policy',              icon:'🏦', color:'#60A5FA', dim:'#1e3a5f', focus:'RBI MPC rate decision CRR SLR OMO VRRR liquidity, US Fed FOMC, BOJ ECB central bank, India bond G-sec yields, banking liquidity surplus deficit'},
+  {id:'geo',        label:'Geopolitical',                 icon:'🌐', color:'#F87171', dim:'#5f1e1e', focus:'India Pakistan military diplomatic, India China LAC border, Middle East conflict oil, US India trade tariff, geopolitical risk Indian markets rupee'},
+  {id:'macro_in',   label:'India Macro Data',             icon:'📊', color:'#A78BFA', dim:'#3b1f5f', focus:'India CPI inflation MoSPI, IIP industrial production, GDP growth, PMI manufacturing services, trade deficit, INR rupee, FX reserves, fiscal deficit India'},
+  {id:'macro_gl',   label:'Global Macro',                 icon:'🌍', color:'#22D3EE', dim:'#1e4a5f', focus:'US CPI inflation BLS, US non farm payrolls jobs, China NBS PMI Caixin, DXY dollar index, US 10 year treasury yield, emerging market flows, global recession'},
+  {id:'govt',       label:'Govt Policy & Budget',         icon:'🏛️', color:'#FBBF24', dim:'#5f3d1e', focus:'CCEA cabinet approvals India, GST council rate changes, CBIC customs import duty gazette notification, PLI scheme disbursements, DIPAM disinvestment OFS, MSP agricultural price'},
+  {id:'filings',    label:'BSE/NSE Filings',              icon:'📋', color:'#34D399', dim:'#1e5f3a', focus:'BSE NSE board meeting outcome today India, SAST promoter pledge creation invocation, insider trading PIT disclosure, Regulation 30 material event order win, shareholding pattern change'},
+  {id:'corporate',  label:'Corporate Results & Guidance', icon:'🎙️', color:'#FB923C', dim:'#5f2e1e', focus:'India quarterly earnings results Q4 FY26 today, concall management guidance, order book wins capex, revenue margin EBITDA guidance cut raise, CFO CEO change, auditor qualification'},
+  {id:'commodity',  label:'Commodities',                  icon:'🛢️', color:'#A3E635', dim:'#2e4a1e', focus:'Crude oil Brent WTI OPEC production, gold silver MCX India, base metals copper aluminium zinc steel, agri commodity wheat rice sugar, coal natural gas LNG'},
+  {id:'fii',        label:'FII/DII Flows',                icon:'💰', color:'#F472B6', dim:'#5f1e3a', focus:'FII DII net flows India equity debt today, Nifty Sensex Bank Nifty index move, FII F&O futures long short ratio NSE, block deals bulk deals, mutual fund SIP flows'},
+  {id:'regulatory', label:'Regulatory & SEBI',            icon:'⚖️', color:'#C084FC', dim:'#3a1e5f', focus:'SEBI enforcement order show cause notice India, CRISIL ICRA CARE credit rating downgrade upgrade watch negative Issuer Not Cooperating INC, RBI PCA banking action, NCLT insolvency petition listed company'},
+  {id:'sector',     label:'Sector & Industry News',       icon:'🏭', color:'#FB7185', dim:'#5f1e2e', focus:'India banking NPA GNPA asset quality, IT sector deal TCS Infosys H1B visa, pharma USFDA warning letter import alert, auto EV monthly sales, infrastructure order inflow, real estate launches, FMCG rural demand'},
+  {id:'hidden',     label:'Hidden & Between-the-Lines',   icon:'🔍', color:'#2DD4BF', dim:'#1e5f4a', focus:'Promoter pledge invocation India, auditor resignation listed company, NCLT insolvency petition new filing, MCA charge creation undisclosed debt, related party transaction new vendor, SEBI consent settlement order quiet, Issuer Not Cooperating rating INC'},
 ];
 
-const SYSPROMPT=`You are a senior Indian equity market analyst. Search the web for news from the LAST 24 HOURS ONLY. Return ONLY a valid JSON object — no markdown, no backticks, no explanation:
-
-{"news_items":[{"headline":"Factual headline max 15 words","summary":"2-3 sentences what happened and why it matters for Indian stocks","source":"Source name","timestamp":"e.g. Today 9:30 AM IST","impact":"POSITIVE|NEGATIVE|MIXED|NEUTRAL","impacted_stocks":[{"ticker":"NSE symbol e.g. RELIANCE","name":"Company name","impact":"POSITIVE|NEGATIVE","reason":"One sentence why"}],"impacted_sectors":[{"sector":"Sector name","impact":"POSITIVE|NEGATIVE|MIXED","reason":"One sentence mechanism"}],"price_action_timeframe":"IMMEDIATE|SHORT_TERM|MEDIUM_TERM|STRUCTURAL","signal_type":"HEADLINE|HIDDEN","confidence":"HIGH|MEDIUM|LOW"}],"category_summary":"3-4 sentences synthesis and market implication","dominant_impact":"POSITIVE|NEGATIVE|MIXED|NEUTRAL"}
-
-Timeframes: IMMEDIATE=today/hours, SHORT_TERM=1-5 days, MEDIUM_TERM=1-4 weeks, STRUCTURAL=1-6 months.
-Rules: Only last 24h news. Use NSE tickers. Never fabricate. Empty array if nothing found. Return ONLY JSON.`;
-
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let results={},statuses={},running=false,curFilter='ALL',doneCount=0,installPrompt=null,apiKey='';
-CATS.forEach(c=>statuses[c.id]='idle');
+let results={}, statuses={}, running=false, curFilter='ALL', doneCount=0, installPrompt=null, geminiKey='';
+CATS.forEach(c => statuses[c.id]='idle');
 
 // ── API KEY ───────────────────────────────────────────────────────────────────
-function saveKey(){
-  const v=document.getElementById('api-input').value.trim();
-  if(!v.startsWith('sk-ant-')){showApiStatus('Invalid key format — must start with sk-ant-','no');return;}
-  apiKey=v;
-  localStorage.setItem('mkt_api_key',v);
-  showApiStatus('✓ Key saved — tap RUN NOW to start','ok');
+function saveKey() {
+  const v = document.getElementById('key-input').value.trim();
+  if (!v || v.length < 10) { showKeyStatus('Paste your key from aistudio.google.com/apikey','no'); return; }
+  geminiKey = v;
+  localStorage.setItem('mkt_gem_key', v);
+  showKeyStatus('✓ Key saved — tap RUN NOW to start your free briefing','ok');
+  document.getElementById('key-banner').classList.remove('show');
 }
-function showApiStatus(msg,type){
-  const el=document.getElementById('api-status');
-  el.textContent=msg; el.className=type==='ok'?'api-ok':'api-no';
+function showKeyStatus(msg, type) {
+  const el = document.getElementById('key-status');
+  el.textContent = msg; el.className = type==='ok'?'kok':'kno';
+  document.getElementById('key-banner').classList.add('show');
 }
-function loadKey(){
-  const k=localStorage.getItem('mkt_api_key')||'';
-  if(k){apiKey=k;document.getElementById('api-input').value=k;showApiStatus('✓ Key loaded','ok');}
+function clearKeyStatus() { document.getElementById('key-status').textContent=''; }
+function loadKey() {
+  const k = localStorage.getItem('mkt_gem_key')||'';
+  if (k) {
+    geminiKey = k;
+    document.getElementById('key-input').value = k;
+    document.getElementById('key-banner').classList.remove('show');
+  }
 }
 
-// ── FETCH CAT ────────────────────────────────────────────────────────────────
-async function fetchCat(cat){
-  if(!apiKey) throw new Error('No API key');
-  const today=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Kolkata'});
+// ── GEMINI API CALL ───────────────────────────────────────────────────────────
+// Uses Gemini 2.0 Flash with Google Search grounding — completely free tier
+async function fetchCat(cat) {
+  if (!geminiKey) throw new Error('No API key');
 
-  // Use allorigins proxy to bypass CORS
-  const payload={
-    model:'claude-sonnet-4-20250514',
-    max_tokens:4000,
-    tools:[{type:'web_search_20250305',name:'web_search'}],
-    system:SYSPROMPT,
-    messages:[{role:'user',content:`Today is ${today} IST. Find last 24 hours news:\nCATEGORY: ${cat.label}\nSEARCH FOCUS: ${cat.focus}\n\nSearch and return JSON analysis.`}]
+  const today = new Date().toLocaleDateString('en-IN', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata'
+  });
+
+  const prompt = `Today is ${today} IST. You are a senior Indian equity market analyst.
+
+Search Google for news published in the LAST 24 HOURS for this category:
+CATEGORY: ${cat.label}
+SEARCH FOCUS: ${cat.focus}
+
+Analyse each news item for impact on NSE/BSE listed Indian stocks.
+
+Return ONLY a valid JSON object, no markdown, no backticks:
+{
+  "news_items": [
+    {
+      "headline": "Factual headline max 12 words",
+      "summary": "2-3 sentences: what happened and market impact",
+      "source": "Publication name",
+      "timestamp": "Today HH:MM AM/PM IST or Yesterday",
+      "impact": "POSITIVE or NEGATIVE or MIXED or NEUTRAL",
+      "impacted_stocks": [
+        {"ticker": "NSE symbol e.g. RELIANCE", "name": "Company name", "impact": "POSITIVE or NEGATIVE", "reason": "One sentence why"}
+      ],
+      "impacted_sectors": [
+        {"sector": "Sector name", "impact": "POSITIVE or NEGATIVE or MIXED", "reason": "One sentence mechanism"}
+      ],
+      "price_action_timeframe": "IMMEDIATE or SHORT_TERM or MEDIUM_TERM or STRUCTURAL",
+      "signal_type": "HEADLINE or HIDDEN",
+      "confidence": "HIGH or MEDIUM or LOW"
+    }
+  ],
+  "category_summary": "3-4 sentences: overall theme and market implication",
+  "dominant_impact": "POSITIVE or NEGATIVE or MIXED or NEUTRAL"
+}
+
+Timeframes: IMMEDIATE=today/hours, SHORT_TERM=1-5 days, MEDIUM_TERM=1-4 weeks, STRUCTURAL=1-6 months.
+Only last 24h news. Use NSE tickers. Never fabricate. Empty array if nothing found. Return ONLY JSON.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    tools: [{ google_search: {} }],
+    generationConfig: {
+      temperature: 0.1,
+      maxOutputTokens: 4096,
+      responseMimeType: 'application/json',
+    }
   };
 
-  // Try direct first (works if CORS is allowed), fallback to proxy
-  let res;
-  try {
-    res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify(payload)
-    });
-  } catch(e) {
-    // Fallback: allorigins proxy
-    const encoded=encodeURIComponent(JSON.stringify(payload));
-    res=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://api.anthropic.com/v1/messages')}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({url:'https://api.anthropic.com/v1/messages',method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify(payload)})
-    });
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({error:{message:res.statusText}}));
+    const msg = err?.error?.message || res.statusText;
+    if (msg.includes('API_KEY_INVALID') || msg.includes('API key not valid')) {
+      throw new Error('INVALID_KEY');
+    }
+    throw new Error(msg);
   }
 
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data=await res.json();
-  const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-  const s=text.indexOf('{'),e=text.lastIndexOf('}');
-  if(s===-1) throw new Error('No JSON');
-  return JSON.parse(text.slice(s,e+1));
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (!text) throw new Error('Empty response');
+
+  // Clean and parse JSON
+  const clean = text.replace(/```json|```/g,'').trim();
+  const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+  if (s === -1) throw new Error('No JSON in response');
+  return JSON.parse(clean.slice(s, e+1));
 }
 
 // ── RUN ALL ───────────────────────────────────────────────────────────────────
-async function runAll(){
-  if(running) return;
-  if(!apiKey){showApiStatus('Please enter your Anthropic API key first','no');document.getElementById('api-input').focus();return;}
-  running=true;doneCount=0;
-  results={};CATS.forEach(c=>{statuses[c.id]='idle';});
-  const btn=document.getElementById('run-btn');
-  btn.disabled=true;btn.textContent='⟳ RUNNING...';
+async function runAll() {
+  if (running) return;
+  if (!geminiKey) {
+    document.getElementById('key-banner').classList.add('show');
+    document.getElementById('key-input').focus();
+    return;
+  }
+  running=true; doneCount=0;
+  results={}; CATS.forEach(c => { statuses[c.id]='idle'; });
+  const btn = document.getElementById('run-btn');
+  btn.disabled=true; btn.textContent='⟳ RUNNING...';
   document.getElementById('empty').style.display='none';
   renderAll();
 
-  for(let i=0;i<CATS.length;i++){
-    const cat=CATS[i];
+  for (let i=0; i<CATS.length; i++) {
+    const cat = CATS[i];
     statuses[cat.id]='loading';
-    setProg(cat.label,i,CATS.length);
+    setProg(cat.label, i, CATS.length);
     renderCat(cat);
-    try{
-      results[cat.id]=await fetchCat(cat);
+    try {
+      results[cat.id] = await fetchCat(cat);
       statuses[cat.id]='done';
-    }catch(err){
+    } catch(err) {
       statuses[cat.id]='error';
-      console.error(cat.label,err);
+      if (err.message === 'INVALID_KEY') {
+        showKeyStatus('Invalid API key — please check and re-enter','no');
+        running=false; btn.disabled=false; btn.textContent='↺ RUN NOW';
+        return;
+      }
+      console.error(cat.label, err.message);
     }
     doneCount++;
-    setProg(cat.label,doneCount,CATS.length);
-    renderCat(cat);renderSum();
-    if(i<CATS.length-1) await sleep(800);
+    setProg(cat.label, doneCount, CATS.length);
+    renderCat(cat); renderSum();
+    if (i < CATS.length-1) await sleep(500); // Gemini free tier: respect rate limits
   }
 
-  running=false;btn.disabled=false;btn.textContent='↺ RUN NOW';
-  setProg('✓ COMPLETE',CATS.length,CATS.length);
+  running=false; btn.disabled=false; btn.textContent='↺ RUN NOW';
+  setProg('✓ COMPLETE', CATS.length, CATS.length);
   document.getElementById('prog-fill').style.background='linear-gradient(90deg,#4ade80,#34d399)';
-  const now=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
-  document.getElementById('last-run').textContent=`Last run ${now} IST`;
-  try{localStorage.setItem('mkt_last_run',Date.now());localStorage.setItem('mkt_results',JSON.stringify(results));localStorage.setItem('mkt_statuses',JSON.stringify(statuses));}catch(e){}
+  const now = new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-run').textContent = `Last run ${now} IST`;
+  try {
+    localStorage.setItem('mkt_last_run', Date.now());
+    localStorage.setItem('mkt_results', JSON.stringify(results));
+    localStorage.setItem('mkt_statuses', JSON.stringify(statuses));
+  } catch(e) {}
 }
 
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ── PROGRESS ──────────────────────────────────────────────────────────────────
-function setProg(lbl,done,total){
-  document.getElementById('prog-label').textContent=done===total?'✓ ALL COMPLETE':`FETCHING: ${lbl}`;
-  document.getElementById('prog-count').textContent=`${done}/${total}`;
-  document.getElementById('prog-fill').style.width=((done/total)*100)+'%';
+function setProg(lbl, done, total) {
+  document.getElementById('prog-lbl').textContent = done===total ? '✓ ALL COMPLETE' : `FETCHING: ${lbl}`;
+  document.getElementById('prog-cnt').textContent = `${done}/${total}`;
+  document.getElementById('prog-fill').style.width = ((done/total)*100)+'%';
 }
 
 // ── IMPACT HELPERS ────────────────────────────────────────────────────────────
@@ -343,10 +410,10 @@ const CC={HIGH:'ctag-h',MEDIUM:'ctag-m',LOW:'ctag-l'};
 function bdg(imp){const c=IC[imp]||'neu';return`<span class="bdg bdg-${c}">${IS[imp]||'●'} ${imp}</span>`;}
 
 // ── SUMMARY ───────────────────────────────────────────────────────────────────
-function renderSum(){
-  const all=Object.values(results).flatMap(r=>r?.news_items||[]);
-  const el=document.getElementById('summary');
-  if(!all.length){el.style.display='none';return;}
+function renderSum() {
+  const all = Object.values(results).flatMap(r=>r?.news_items||[]);
+  const el = document.getElementById('summary');
+  if (!all.length){el.style.display='none';return;}
   el.style.display='flex';
   const pos=all.filter(i=>i.impact==='POSITIVE').length;
   const neg=all.filter(i=>i.impact==='NEGATIVE').length;
@@ -355,22 +422,19 @@ function renderSum(){
   const imm=all.filter(i=>i.price_action_timeframe==='IMMEDIATE').length;
   const top=imp=>{const m={};all.filter(i=>i.impact===imp).flatMap(i=>i.impacted_sectors||[]).forEach(s=>{m[s.sector]=(m[s.sector]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';};
   el.innerHTML=[
-    {l:'TOTAL',v:all.length,c:'#9ca3af'},
-    {l:'▲ POS',v:pos,c:'#4ade80'},
-    {l:'▼ NEG',v:neg,c:'#f87171'},
-    {l:'◆ MIX',v:mix,c:'#fbbf24'},
-    {l:'🔍 HID',v:hid,c:'#2DD4BF'},
-    {l:'⚡ NOW',v:imm,c:'#FF4444'},
+    {l:'TOTAL',v:all.length,c:'#9ca3af'},{l:'▲ POS',v:pos,c:'#4ade80'},
+    {l:'▼ NEG',v:neg,c:'#f87171'},{l:'◆ MIX',v:mix,c:'#fbbf24'},
+    {l:'🔍 HID',v:hid,c:'#2DD4BF'},{l:'⚡ NOW',v:imm,c:'#FF4444'},
     {l:'TOP BULL',v:top('POSITIVE'),c:'#4ade80',sm:1},
     {l:'TOP BEAR',v:top('NEGATIVE'),c:'#f87171',sm:1},
   ].map(s=>`<div class="sbox"><span class="slbl">${s.l}</span><span class="sval${s.sm?' sm':''}" style="color:${s.c}">${s.v}</span></div>`).join('');
 }
 
 // ── RENDER CATEGORY ───────────────────────────────────────────────────────────
-function renderCat(cat){
-  let el=document.getElementById('c-'+cat.id);
-  if(!el){el=document.createElement('div');el.id='c-'+cat.id;el.className='cat';document.getElementById('cats').appendChild(el);}
-  const st=statuses[cat.id],r=results[cat.id],items=r?.news_items||[];
+function renderCat(cat) {
+  let el = document.getElementById('c-'+cat.id);
+  if (!el){el=document.createElement('div');el.id='c-'+cat.id;el.className='cat';document.getElementById('cats').appendChild(el);}
+  const st=statuses[cat.id], r=results[cat.id], items=r?.news_items||[];
   const open=el.dataset.open==='1';
   const pos=items.filter(i=>i.impact==='POSITIVE').length;
   const neg=items.filter(i=>i.impact==='NEGATIVE').length;
@@ -385,7 +449,7 @@ function renderCat(cat){
   el.innerHTML=`
     <div class="cat-hdr" onclick="${can?`toggleCat('${cat.id}')`:''}" style="cursor:${can?'pointer':'default'}">
       <div class="cat-ico" style="background:${cat.dim}">${cat.icon}</div>
-      <div style="flex:1;min-width:0"><div class="cat-ttl">${cat.label}</div><div class="cat-sub">${cat.focus.slice(0,50)}…</div></div>
+      <div style="flex:1;min-width:0"><div class="cat-ttl">${cat.label}</div><div class="cat-sub">${cat.focus.slice(0,52)}…</div></div>
       <div class="cat-meta">${meta}${can?`<span class="chev">${open?'▲':'▼'}</span>`:''}</div>
     </div>
     ${open&&r?.category_summary?`<div class="cat-sum">${r.category_summary}</div>`:''}
@@ -393,69 +457,69 @@ function renderCat(cat){
   `;
 }
 
-function toggleCat(id){
+function toggleCat(id) {
   const el=document.getElementById('c-'+id);
   el.dataset.open=el.dataset.open==='1'?'0':'1';
   renderCat(CATS.find(c=>c.id===id));
 }
 
 // ── NEWS CARD HTML ────────────────────────────────────────────────────────────
-function ncHtml(item,idx,cid){
+function ncHtml(item, idx, cid) {
   const ic=IC[item.impact]||'neu';
-  const stocks=(item.impacted_stocks||[]).map(s=>`<div class="ip"><span class="itkr">${s.ticker}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
-  const sects=(item.impacted_sectors||[]).map(s=>`<div class="ip"><span class="iname">${s.sector}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
+  const stocks=(item.impacted_stocks||[]).map(s=>`<div class="ip"><span class="itkr">${s.ticker}</span><span class="ireason" style="color:#444;font-size:9px">${s.name||''}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
+  const sects=(item.impacted_sectors||[]).map(s=>`<div class="ip"><span class="itkr" style="font-size:10px;color:#ccc">${s.sector}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
   const uid=`${cid}-${idx}`;
   return`<div class="nc ${ic}">
     <div class="nh" onclick="toggleNews('${uid}')">
       <span class="nidx">${String(idx+1).padStart(2,'0')}</span>
       <div class="nm">
         <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:flex-start;margin-bottom:4px">
-          <span class="nhl" style="flex:1 1 130px">${item.headline}</span>${bdg(item.impact)}
+          <span class="nhl" style="flex:1 1 120px">${item.headline}</span>${bdg(item.impact)}
         </div>
         <div class="ntags">
           <span class="tf ${TC[item.price_action_timeframe]||'tf-s'}">${TL[item.price_action_timeframe]||''}</span>
           ${item.signal_type==='HIDDEN'?'<span class="htag">🔍 HIDDEN</span>':''}
           ${item.confidence?`<span class="ctag ${CC[item.confidence]||''}">${item.confidence}</span>`:''}
           ${item.source?`<span class="stag">${item.source}</span>`:''}
+          ${item.timestamp?`<span class="stag">${item.timestamp}</span>`:''}
         </div>
       </div>
       <span class="nchev" id="nc-${uid}">▼</span>
     </div>
     <div class="nd" id="nd-${uid}">
       <p class="nsum">${item.summary||''}</p>
-      ${stocks?`<div class="isec"><div class="ilbl">STOCKS</div><div class="ipills">${stocks}</div></div>`:''}
-      ${sects?`<div class="isec"><div class="ilbl">SECTORS</div><div class="ipills">${sects}</div></div>`:''}
+      ${stocks?`<div class="isec"><div class="ilbl">STOCKS IMPACTED</div><div class="ipills">${stocks}</div></div>`:''}
+      ${sects?`<div class="isec"><div class="ilbl">SECTORS IMPACTED</div><div class="ipills">${sects}</div></div>`:''}
     </div>
   </div>`;
 }
 
-function toggleNews(uid){
-  const d=document.getElementById('nd-'+uid),c=document.getElementById('nc-'+uid);
+function toggleNews(uid) {
+  const d=document.getElementById('nd-'+uid), c=document.getElementById('nc-'+uid);
   if(!d||!c) return;
   const o=d.style.display==='block';
-  d.style.display=o?'none':'block';c.textContent=o?'▼':'▲';
+  d.style.display=o?'none':'block'; c.textContent=o?'▼':'▲';
 }
 
 // ── RENDER ALL ────────────────────────────────────────────────────────────────
-function renderAll(){
+function renderAll() {
   document.getElementById('cats').innerHTML='';
-  const show=curFilter==='ALL'?CATS:CATS.filter(c=>{const r=results[c.id];return r?.news_items?.length&&r.dominant_impact===curFilter;});
+  const show = curFilter==='ALL' ? CATS : CATS.filter(c=>{const r=results[c.id];return r?.news_items?.length&&r.dominant_impact===curFilter;});
   show.forEach(cat=>renderCat(cat));
   renderSum();
 }
 
-function setFilter(f){
+function setFilter(f) {
   curFilter=f;
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
   const map={ALL:0,POSITIVE:1,NEGATIVE:2,MIXED:3};
-  const btns=document.querySelectorAll('.fbtn');
-  btns[map[f]]?.classList.add('on');
+  document.querySelectorAll('.fbtn')[map[f]]?.classList.add('on');
   renderAll();
 }
 
 // ── CACHE ─────────────────────────────────────────────────────────────────────
-function loadCache(){
-  try{
+function loadCache() {
+  try {
     const lr=localStorage.getItem('mkt_last_run');
     if(Date.now()-parseInt(lr||0)<6*3600000){
       results=JSON.parse(localStorage.getItem('mkt_results')||'{}');
@@ -463,22 +527,23 @@ function loadCache(){
       const t=new Date(parseInt(lr)).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
       document.getElementById('last-run').textContent=`Last run ${t} IST (cached)`;
       document.getElementById('empty').style.display='none';
-      renderAll();return true;
+      renderAll(); return true;
     }
-  }catch(e){}return false;
+  } catch(e){}
+  return false;
 }
 
 // ── SCHEDULING ────────────────────────────────────────────────────────────────
 setInterval(()=>{
-  if(!apiKey||running) return;
+  if(!geminiKey||running) return;
   const ist=new Date(Date.now()+5.5*3600000);
-  const h=ist.getUTCHours(),m=ist.getUTCMinutes();
+  const h=ist.getUTCHours(), m=ist.getUTCMinutes();
   const lr=parseInt(localStorage.getItem('mkt_last_run')||0);
   if((h===6||h===15)&&m<10&&Date.now()-lr>30*60*1000) runAll();
-},5*60*1000);
+}, 5*60*1000);
 
 // ── SERVICE WORKER ────────────────────────────────────────────────────────────
-async function initSW(){
+async function initSW() {
   if('serviceWorker' in navigator){
     try{
       await navigator.serviceWorker.register('/DailyNews/sw.js');
@@ -488,8 +553,8 @@ async function initSW(){
 }
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
-async function reqNotif(){
-  if(!('Notification' in window)){alert('Notifications not supported on this browser.');return;}
+async function reqNotif() {
+  if(!('Notification' in window)){alert('Notifications not supported.');return;}
   const p=await Notification.requestPermission();
   if(p==='granted'){
     document.getElementById('notif-banner').classList.remove('show');
@@ -505,7 +570,7 @@ function triggerInstall(){if(!installPrompt)return;installPrompt.prompt();instal
 window.addEventListener('appinstalled',()=>document.getElementById('inst-banner').classList.remove('show'));
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',async()=>{
+document.addEventListener('DOMContentLoaded', async()=>{
   loadKey();
   await initSW();
   if(localStorage.getItem('mkt_notif')==='1'&&Notification.permission==='granted'){
@@ -515,7 +580,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     document.getElementById('notif-banner').classList.add('show');
   }
   const hadCache=loadCache();
-  if(!hadCache) document.getElementById('empty').style.display='block';
+  if(geminiKey&&!hadCache) setTimeout(runAll,800);
 });
 </script>
 </body>

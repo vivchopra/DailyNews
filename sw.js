@@ -1,92 +1,66 @@
-const CACHE_NAME = 'india-market-intel-v1';
-const STATIC_ASSETS = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const CACHE_NAME = 'india-market-v2';
+const BASE = '/DailyNews';
+const STATIC = [BASE + '/', BASE + '/index.html', BASE + '/manifest.json'];
 
-// ─── INSTALL ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(c => c.addAll(STATIC).catch(() => {}))
+      .then(() => self.skipWaiting())
   );
 });
 
-// ─── ACTIVATE ─────────────────────────────────────────────────────────────────
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
-// ─── FETCH (cache-first for static, network-first for API) ────────────────────
 self.addEventListener('fetch', e => {
-  if (e.request.url.includes('api.anthropic.com')) return; // never cache API calls
+  // Never intercept API calls
+  if (e.request.url.includes('anthropic.com') || e.request.url.includes('cors-anywhere')) return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-      if (res.ok && e.request.method === 'GET') {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-      }
-      return res;
-    }))
+    caches.match(e.request).then(hit => hit || fetch(e.request).catch(() => caches.match(BASE + '/index.html')))
   );
 });
 
-// ─── SCHEDULED NOTIFICATION CHECK ─────────────────────────────────────────────
-// Fires when browser wakes the SW via periodic sync or a client message
+// Notification scheduling
 self.addEventListener('message', e => {
-  if (e.data?.type === 'SCHEDULE_CHECK') {
-    checkAndNotify();
-  }
+  if (e.data?.type === 'SCHEDULE_CHECK') fireIfDue();
 });
 
 self.addEventListener('periodicsync', e => {
-  if (e.tag === 'market-briefing') {
-    e.waitUntil(checkAndNotify());
-  }
+  if (e.tag === 'market-briefing') e.waitUntil(fireIfDue());
 });
 
-function checkAndNotify() {
+async function fireIfDue() {
   const now = new Date();
-  const istOffset = 5.5 * 60 * 60 * 1000;
-  const ist = new Date(now.getTime() + istOffset);
-  const h = ist.getUTCHours();
-  const m = ist.getUTCMinutes();
-
-  const is6AM  = h === 6  && m < 10;
-  const is3PM  = h === 15 && m < 10;
-
-  if (is6AM || is3PM) {
-    const label = is6AM ? 'Morning Briefing (6 AM IST)' : 'Afternoon Briefing (3 PM IST)';
-    return self.registration.showNotification('🇮🇳 India Market Intelligence', {
-      body: `${label} — Tap to open your daily market briefing`,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
-      tag: 'market-briefing',
+  const ist = new Date(now.getTime() + 5.5 * 3600000);
+  const h = ist.getUTCHours(), m = ist.getUTCMinutes();
+  if ((h === 6 || h === 15) && m < 10) {
+    const label = h === 6 ? 'Morning (6 AM IST)' : 'Afternoon (3 PM IST)';
+    await self.registration.showNotification('🇮🇳 India Market Intelligence', {
+      body: `${label} briefing ready — tap to fetch today\'s news`,
+      icon: BASE + '/icon-192.png',
+      badge: BASE + '/icon-192.png',
+      tag: 'market-brief',
       renotify: true,
       requireInteraction: true,
-      actions: [
-        { action: 'open', title: '📊 Open Briefing' },
-        { action: 'dismiss', title: 'Dismiss' },
-      ],
-      data: { url: '/' },
+      data: { url: BASE + '/' },
     });
   }
 }
 
-// ─── NOTIFICATION CLICK ───────────────────────────────────────────────────────
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  if (e.action === 'dismiss') return;
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-      for (const client of list) {
-        if (client.url.includes(self.location.origin)) {
-          client.focus();
-          client.postMessage({ type: 'AUTO_RUN' });
-          return;
-        }
+      for (const c of list) {
+        if (c.url.includes('vivchopra.github.io')) { c.focus(); c.postMessage({ type: 'AUTO_RUN' }); return; }
       }
-      return clients.openWindow('/');
+      return clients.openWindow(BASE + '/');
     })
   );
 });

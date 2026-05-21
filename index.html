@@ -1,617 +1,521 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#3B82F6" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="MarketBrief" />
-  <meta name="description" content="Daily Indian equity market intelligence — NSE/BSE news, stock & sector impact" />
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta name="theme-color" content="#3B82F6"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="MarketBrief"/>
+  <link rel="manifest" href="/DailyNews/manifest.json"/>
+  <link rel="apple-touch-icon" href="/DailyNews/icon-192.png"/>
   <title>India Market Intelligence</title>
+<style>
+:root{
+  --bg:#050505;--surf:#0a0a0a;--surf2:#0f0f0f;
+  --b1:#161616;--b2:#1e1e1e;
+  --tx:#ede8e0;--mu:#555;--di:#2a2a2a;
+  --blue:#3B82F6;--green:#4ade80;--red:#f87171;
+  --yel:#fbbf24;--teal:#2DD4BF;--ora:#FB923C;
+  --safe:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:Georgia,serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#1e1e1e;border-radius:2px}
 
-  <style>
-    :root {
-      --bg: #050505; --surface: #0a0a0a; --surface2: #0f0f0f;
-      --border: #161616; --border2: #1e1e1e;
-      --text: #ede8e0; --muted: #555; --dim: #2a2a2a;
-      --blue: #3B82F6; --green: #4ade80; --red: #f87171;
-      --yellow: #fbbf24; --teal: #2DD4BF; --orange: #FB923C;
-      --safe-top: env(safe-area-inset-top, 0px);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: Georgia, serif; overflow-x: hidden; }
-    ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 2px; }
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1px solid var(--b1);padding:calc(var(--safe) + 10px) 14px 10px}
+#hdr-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+#app-title{font-size:17px;font-weight:400;letter-spacing:-0.02em}
+#app-sub{font-size:8px;color:var(--di);font-family:monospace;letter-spacing:.2em;margin-top:2px}
+#last-run{font-size:8px;color:#1a3a1a;font-family:monospace;margin-top:2px}
+#run-btn{padding:8px 14px;border-radius:4px;border:1px solid var(--blue);background:linear-gradient(135deg,#1e3a5f,var(--blue));color:#fff;font-size:10px;font-family:monospace;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .2s}
+#run-btn:disabled{background:#111;border-color:#1a1a1a;color:#333;cursor:not-allowed}
 
-    /* ── HEADER ── */
-    #header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: calc(var(--safe-top) + 12px) 16px 12px;
-    }
-    #header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-    #app-title { font-size: 18px; font-weight: 400; letter-spacing: -0.02em; color: var(--text); }
-    #app-sub { font-size: 9px; color: var(--dim); font-family: monospace; letter-spacing: 0.2em; margin-top: 2px; }
-    #last-run { font-size: 9px; color: #1a3a1a; font-family: monospace; margin-top: 2px; }
+/* PROGRESS */
+#prog-wrap{margin-bottom:9px}
+#prog-row{display:flex;justify-content:space-between;margin-bottom:3px}
+#prog-label,#prog-count{font-size:8px;color:var(--mu);font-family:monospace;letter-spacing:.12em}
+#prog-track{height:2px;background:#111;border-radius:2px;overflow:hidden}
+#prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#8B5CF6);border-radius:2px;transition:width .4s}
 
-    #run-btn {
-      padding: 9px 16px; border-radius: 4px; border: 1px solid var(--blue);
-      background: linear-gradient(135deg, #1e3a5f, var(--blue));
-      color: #fff; font-size: 11px; font-family: monospace; font-weight: 700;
-      letter-spacing: 0.12em; cursor: pointer; white-space: nowrap;
-      transition: opacity 0.2s; flex-shrink: 0;
-    }
-    #run-btn:disabled { background: #111; border-color: #1a1a1a; color: #333; cursor: not-allowed; }
+/* FILTERS */
+#filters{display:flex;gap:4px;flex-wrap:wrap}
+.fbtn{padding:3px 9px;border-radius:3px;border:1px solid var(--b1);background:var(--surf);color:var(--di);font-size:8px;font-family:monospace;letter-spacing:.12em;font-weight:700;cursor:pointer;transition:all .15s}
+.fbtn.on{background:#1e3a5f;color:var(--blue);border-color:var(--blue)}
+.fbtn.on.pos{background:#052e16;color:var(--green);border-color:#166534}
+.fbtn.on.neg{background:#450a0a;color:var(--red);border-color:#991b1b}
+.fbtn.on.mix{background:#1c1304;color:var(--yel);border-color:#92400e}
 
-    /* ── PROGRESS ── */
-    #progress-wrap { margin-bottom: 10px; }
-    #progress-labels { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    #progress-active { font-size: 9px; color: var(--muted); font-family: monospace; letter-spacing: 0.12em; }
-    #progress-count { font-size: 9px; color: var(--muted); font-family: monospace; }
-    #progress-track { height: 2px; background: #111; border-radius: 2px; overflow: hidden; }
-    #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--blue), #8B5CF6); border-radius: 2px; transition: width 0.4s ease; }
+/* BANNERS */
+.banner{display:none;align-items:center;gap:8px;padding:9px 14px;border-radius:5px;margin-bottom:7px}
+.banner.show{display:flex}
+#notif-banner{background:#1e3a1e;border:1px solid #166534}
+#notif-text{font-size:11px;color:var(--green);font-family:system-ui;flex:1}
+#notif-btn{padding:4px 10px;background:#052e16;color:var(--green);border:1px solid #166534;border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0}
+#inst-banner{background:#1e3a5f;border:1px solid var(--blue)}
+#inst-text{font-size:11px;color:#93C5FD;font-family:system-ui;flex:1}
+#inst-btn{padding:4px 10px;background:#1e3a5f;color:var(--blue);border:1px solid var(--blue);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;flex-shrink:0}
 
-    /* ── FILTERS ── */
-    #filters { display: flex; gap: 5px; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 3px 10px; border-radius: 3px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--dim); font-size: 9px;
-      font-family: monospace; letter-spacing: 0.12em; font-weight: 700;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .filter-btn.active { background: #1e3a5f; color: var(--blue); border-color: var(--blue); }
-    .filter-btn.pos.active { background: #052e16; color: var(--green); border-color: #166534; }
-    .filter-btn.neg.active { background: #450a0a; color: var(--red); border-color: #991b1b; }
-    .filter-btn.mix.active { background: #1c1304; color: var(--yellow); border-color: #92400e; }
+/* SCHEDULE */
+#sched-row{display:none;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.sched-item{display:flex;align-items:center;gap:5px;padding:4px 9px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px}
+.sched-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pd 2s infinite}
+.sched-lbl{font-size:9px;color:#444;font-family:monospace}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
 
-    /* ── SUMMARY STRIP ── */
-    #summary-strip { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px; margin: 0 0 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
-    .stat-box { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 10px; background: #111; border: 1px solid var(--border2); border-radius: 4px; min-width: 55px; }
-    .stat-label { font-size: 8px; color: #333; font-family: monospace; letter-spacing: 0.15em; }
-    .stat-val { font-size: 16px; font-family: monospace; font-weight: 700; line-height: 1; }
-    .stat-val.sm { font-size: 11px; }
+/* SUMMARY */
+#summary{display:none;flex-wrap:wrap;gap:5px;padding:10px 14px;margin-bottom:6px;background:var(--surf);border:1px solid var(--b1);border-radius:5px}
+.sbox{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 9px;background:#111;border:1px solid var(--b2);border-radius:3px;min-width:50px}
+.slbl{font-size:7px;color:#333;font-family:monospace;letter-spacing:.15em}
+.sval{font-size:15px;font-family:monospace;font-weight:700;line-height:1}
+.sval.sm{font-size:10px}
 
-    /* ── CATEGORY ── */
-    .cat-block { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; overflow: hidden; transition: border-color 0.2s; }
-    .cat-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
-    .cat-icon { width: 36px; height: 36px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-    .cat-title { font-size: 13px; font-weight: 600; color: var(--text); }
-    .cat-sub { font-size: 9px; color: #2a2a2a; font-family: system-ui; margin-top: 1px; }
-    .cat-meta { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
-    .cat-summary { padding: 8px 14px; font-size: 11px; color: #777; line-height: 1.6; font-family: system-ui; font-style: italic; border-top: 1px solid #111; border-bottom: 1px solid #111; }
-    .cat-items { padding: 10px 12px; }
-    .cat-chevron { color: #2a2a2a; font-size: 11px; }
+/* CATEGORY */
+.cat{background:var(--surf);border:1px solid var(--b1);border-radius:5px;margin-bottom:5px;overflow:hidden;transition:border-color .2s}
+.cat-hdr{display:flex;align-items:center;gap:9px;padding:11px 13px;cursor:pointer}
+.cat-ico{width:34px;height:34px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cat-ttl{font-size:12px;font-weight:600;color:var(--tx)}
+.cat-sub{font-size:8px;color:#2a2a2a;font-family:system-ui;margin-top:1px}
+.cat-meta{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.cat-sum{padding:7px 13px;font-size:11px;color:#666;line-height:1.6;font-family:system-ui;font-style:italic;border-top:1px solid #111;border-bottom:1px solid #111}
+.cat-items{padding:9px 11px}
+.chev{color:#2a2a2a;font-size:10px}
 
-    /* ── STATUS BADGES ── */
-    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 3px; font-size: 9px; font-family: monospace; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; }
-    .badge-pos { background: #052e16; color: var(--green); border: 1px solid #166534; }
-    .badge-neg { background: #450a0a; color: var(--red); border: 1px solid #991b1b; }
-    .badge-mix { background: #1c1304; color: var(--yellow); border: 1px solid #92400e; }
-    .badge-neu { background: #111827; color: #9ca3af; border: 1px solid #374151; }
-    .badge-load { color: var(--blue); font-family: monospace; font-size: 9px; }
-    .badge-err { color: var(--red); font-family: monospace; font-size: 9px; }
-    .badge-none { color: #222; font-family: monospace; font-size: 9px; }
-    .count-pos { color: var(--green); font-family: monospace; font-size: 10px; font-weight: 700; }
-    .count-neg { color: var(--red); font-family: monospace; font-size: 10px; font-weight: 700; }
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:2px;font-size:8px;font-family:monospace;font-weight:700;letter-spacing:.05em;white-space:nowrap;border:1px solid}
+.bdg-pos{background:#052e16;color:var(--green);border-color:#166534}
+.bdg-neg{background:#450a0a;color:var(--red);border-color:#991b1b}
+.bdg-mix{background:#1c1304;color:var(--yel);border-color:#92400e}
+.bdg-neu{background:#111827;color:#9ca3af;border-color:#374151}
+.ld{color:var(--blue);font-family:monospace;font-size:8px}
+.er{color:var(--red);font-family:monospace;font-size:8px}
+.nn{color:#222;font-family:monospace;font-size:8px}
+.cp{color:var(--green);font-family:monospace;font-size:9px;font-weight:700}
+.cn{color:var(--red);font-family:monospace;font-size:9px;font-weight:700}
 
-    /* ── TF BADGE ── */
-    .tf { font-size: 9px; font-family: monospace; font-weight: 700; }
-    .tf-imm { color: #FF4444; } .tf-st { color: #FF9A3C; } .tf-mt { color: #F5C518; } .tf-str { color: #4CAF8A; }
+/* TIMEFRAME */
+.tf{font-size:8px;font-family:monospace;font-weight:700}
+.tf-i{color:#FF4444}.tf-s{color:#FF9A3C}.tf-m{color:#F5C518}.tf-l{color:#4CAF8A}
 
-    /* ── NEWS CARD ── */
-    .news-card { border-left: 3px solid #333; background: #0c0c0c; border: 1px solid #1a1a1a; border-radius: 0 4px 4px 0; margin-bottom: 8px; overflow: hidden; }
-    .news-card.pos { border-left-color: var(--green); }
-    .news-card.neg { border-left-color: var(--red); }
-    .news-card.mix { border-left-color: var(--yellow); }
-    .news-header { padding: 10px 12px; cursor: pointer; display: flex; gap: 8px; align-items: flex-start; }
-    .news-idx { color: #333; font-size: 9px; font-family: monospace; padding-top: 3px; flex-shrink: 0; }
-    .news-main { flex: 1; min-width: 0; }
-    .news-headline { font-size: 12px; color: #ede8e0; font-weight: 600; line-height: 1.4; margin-bottom: 5px; }
-    .news-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .hidden-tag { font-size: 8px; color: var(--teal); font-family: monospace; font-weight: 700; }
-    .conf-high { color: var(--green); } .conf-med { color: var(--yellow); } .conf-low { color: var(--red); }
-    .source-tag { font-size: 9px; color: #2a2a2a; font-family: monospace; }
-    .news-chevron { color: #2a2a2a; font-size: 11px; flex-shrink: 0; padding-top: 2px; }
-    .news-detail { padding: 0 12px 12px 28px; border-top: 1px solid #151515; }
-    .news-summary { font-size: 11px; color: #666; line-height: 1.65; margin: 10px 0 12px; font-family: system-ui; }
-    .impact-section { margin-bottom: 10px; }
-    .impact-label { font-size: 8px; color: #2a2a2a; letter-spacing: 0.25em; margin-bottom: 5px; font-family: monospace; }
-    .impact-pills { display: flex; flex-wrap: wrap; gap: 5px; }
-    .impact-pill { background: #111; border: 1px solid #1e1e1e; border-radius: 3px; padding: 4px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
-    .pill-ticker { font-size: 11px; color: #ede8e0; font-family: monospace; font-weight: 700; }
-    .pill-name { font-size: 9px; color: #444; font-family: system-ui; }
-    .pill-reason { font-size: 9px; color: #555; font-family: system-ui; }
+/* NEWS CARD */
+.nc{border-left:3px solid #333;background:#0c0c0c;border:1px solid #1a1a1a;border-radius:0 3px 3px 0;margin-bottom:7px;overflow:hidden}
+.nc.pos{border-left-color:var(--green)}.nc.neg{border-left-color:var(--red)}.nc.mix{border-left-color:var(--yel)}
+.nh{padding:9px 11px;cursor:pointer;display:flex;gap:7px;align-items:flex-start}
+.nidx{color:#333;font-size:8px;font-family:monospace;padding-top:3px;flex-shrink:0}
+.nm{flex:1;min-width:0}
+.nhl{font-size:11px;color:#ede8e0;font-weight:600;line-height:1.4;margin-bottom:4px}
+.ntags{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.htag{font-size:7px;color:var(--teal);font-family:monospace;font-weight:700}
+.ctag{font-size:7px;font-family:monospace}
+.ctag-h{color:var(--green)}.ctag-m{color:var(--yel)}.ctag-l{color:var(--red)}
+.stag{font-size:8px;color:#2a2a2a;font-family:monospace}
+.nchev{color:#2a2a2a;font-size:10px;flex-shrink:0;padding-top:2px}
+.nd{padding:0 11px 11px 26px;border-top:1px solid #151515;display:none}
+.nsum{font-size:11px;color:#666;line-height:1.6;margin:9px 0 10px;font-family:system-ui}
+.isec{margin-bottom:9px}
+.ilbl{font-size:7px;color:#2a2a2a;letter-spacing:.25em;margin-bottom:4px;font-family:monospace}
+.ipills{display:flex;flex-wrap:wrap;gap:4px}
+.ip{background:#111;border:1px solid #1e1e1e;border-radius:3px;padding:3px 7px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.itkr{font-size:11px;color:#ede8e0;font-family:monospace;font-weight:700}
+.iname{font-size:8px;color:#444;font-family:system-ui}
+.ireason{font-size:9px;color:#555;font-family:system-ui}
 
-    /* ── NOTIFICATION BANNER ── */
-    #notif-banner { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e3a1e; border: 1px solid #166534; border-radius: 6px; margin-bottom: 8px; }
-    #notif-banner.show { display: flex; }
-    #notif-text { font-size: 11px; color: var(--green); font-family: system-ui; flex: 1; }
-    #notif-btn { padding: 5px 12px; background: #052e16; color: var(--green); border: 1px solid #166534; border-radius: 3px; font-size: 10px; font-family: monospace; cursor: pointer; }
+/* BODY */
+#body{padding:10px 12px 80px;max-width:680px;margin:0 auto}
+#empty{text-align:center;padding:50px 20px;color:#1e1e1e;font-family:monospace;font-size:11px}
+#footer{padding:14px;text-align:center;border-top:1px solid #111;margin-top:14px}
+#footer p{font-size:8px;color:#1a1a1a;font-family:monospace;letter-spacing:.1em}
 
-    /* ── INSTALL BANNER ── */
-    #install-banner { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e3a5f; border: 1px solid var(--blue); border-radius: 6px; margin-bottom: 8px; }
-    #install-banner.show { display: flex; }
-    #install-text { font-size: 11px; color: #93C5FD; font-family: system-ui; flex: 1; }
-    #install-btn { padding: 5px 12px; background: #1e3a5f; color: var(--blue); border: 1px solid var(--blue); border-radius: 3px; font-size: 10px; font-family: monospace; cursor: pointer; flex-shrink: 0; }
+/* API KEY INPUT */
+#api-section{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:5px;padding:12px 14px;margin-bottom:10px}
+#api-label{font-size:9px;color:#555;font-family:monospace;letter-spacing:.2em;margin-bottom:6px}
+#api-row{display:flex;gap:8px}
+#api-input{flex:1;background:#111;border:1px solid #2a2a2a;border-radius:3px;padding:7px 10px;color:var(--tx);font-family:monospace;font-size:11px;outline:none}
+#api-input:focus{border-color:var(--blue)}
+#api-save{padding:7px 14px;background:#1e3a5f;color:var(--blue);border:1px solid var(--blue);border-radius:3px;font-size:9px;font-family:monospace;cursor:pointer;white-space:nowrap}
+#api-status{font-size:9px;font-family:monospace;margin-top:5px}
+.api-ok{color:var(--green)}.api-no{color:var(--red)}
 
-    /* ── SCHEDULE DISPLAY ── */
-    #schedule-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 16px; margin-bottom: 6px; }
-    .sched-item { display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 4px; }
-    .sched-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
-    .sched-label { font-size: 10px; color: #444; font-family: monospace; }
-    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    /* ── EMPTY ── */
-    #empty { text-align: center; padding: 60px 20px; color: #1e1e1e; font-family: monospace; font-size: 12px; }
-
-    /* ── FOOTER ── */
-    #footer { padding: 16px; text-align: center; border-top: 1px solid #111; margin-top: 16px; }
-    #footer p { font-size: 9px; color: #1a1a1a; font-family: monospace; letter-spacing: 0.12em; }
-
-    /* ── BODY PADDING ── */
-    #body { padding: 12px 12px 80px; max-width: 680px; margin: 0 auto; }
-
-    @media (min-width: 600px) {
-      #app-title { font-size: 22px; }
-      .news-headline { font-size: 13px; }
-      #body { padding: 16px 20px 80px; }
-    }
-  </style>
+@media(min-width:600px){
+  #app-title{font-size:20px}
+  .nhl{font-size:12px}
+  #body{padding:14px 18px 80px}
+}
+</style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
-<div id="header">
-  <div id="header-row">
+<!-- HEADER -->
+<div id="hdr">
+  <div id="hdr-row">
     <div>
-      <div style="font-size:9px;color:#3B82F6;font-family:monospace;letter-spacing:0.3em;margin-bottom:3px">🇮🇳 INDIA MARKET INTELLIGENCE</div>
+      <div style="font-size:8px;color:#3B82F6;font-family:monospace;letter-spacing:.3em;margin-bottom:3px">🇮🇳 INDIA MARKET INTELLIGENCE</div>
       <div id="app-title">Daily Briefing</div>
-      <div id="app-sub">NSE · BSE · LAST 24 HOURS · 12 CATEGORIES</div>
+      <div id="app-sub">NSE · BSE · LAST 24H · 12 CATEGORIES</div>
       <div id="last-run"></div>
     </div>
     <button id="run-btn" onclick="runAll()">↺ RUN NOW</button>
   </div>
-
-  <div id="progress-wrap">
-    <div id="progress-labels">
-      <span id="progress-active">READY</span>
-      <span id="progress-count">0/12</span>
-    </div>
-    <div id="progress-track"><div id="progress-fill"></div></div>
+  <div id="prog-wrap">
+    <div id="prog-row"><span id="prog-label">READY</span><span id="prog-count">0/12</span></div>
+    <div id="prog-track"><div id="prog-fill"></div></div>
   </div>
-
   <div id="filters">
-    <button class="filter-btn active" onclick="setFilter('ALL')">ALL</button>
-    <button class="filter-btn pos" onclick="setFilter('POSITIVE')">▲ POS</button>
-    <button class="filter-btn neg" onclick="setFilter('NEGATIVE')">▼ NEG</button>
-    <button class="filter-btn mix" onclick="setFilter('MIXED')">◆ MIXED</button>
+    <button class="fbtn on" onclick="setFilter('ALL')">ALL</button>
+    <button class="fbtn pos" onclick="setFilter('POSITIVE')">▲ POS</button>
+    <button class="fbtn neg" onclick="setFilter('NEGATIVE')">▼ NEG</button>
+    <button class="fbtn mix" onclick="setFilter('MIXED')">◆ MIX</button>
   </div>
 </div>
 
-<!-- ── BODY ── -->
+<!-- BODY -->
 <div id="body">
-  <div id="install-banner">
-    <span id="install-text">📲 Add to Home Screen for app-like experience + notifications</span>
-    <button id="install-btn" onclick="triggerInstall()">INSTALL</button>
+
+  <!-- API KEY SECTION -->
+  <div id="api-section">
+    <div id="api-label">ANTHROPIC API KEY (stored locally, never sent anywhere else)</div>
+    <div id="api-row">
+      <input id="api-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false"/>
+      <button id="api-save" onclick="saveKey()">SAVE KEY</button>
+    </div>
+    <div id="api-status"></div>
   </div>
 
-  <div id="notif-banner">
-    <span id="notif-text">🔔 Enable notifications to get alerts at 6 AM & 3 PM IST daily</span>
-    <button id="notif-btn" onclick="requestNotifications()">ENABLE</button>
+  <div id="inst-banner" class="banner">
+    <span id="inst-text">📲 Install as app — Add to Home Screen for native experience</span>
+    <button id="inst-btn" onclick="triggerInstall()">INSTALL</button>
   </div>
 
-  <div id="schedule-row" style="display:none">
-    <div class="sched-item"><div class="sched-dot"></div><span class="sched-label">⏰ 6:00 AM IST — AUTO BRIEFING</span></div>
-    <div class="sched-item"><div class="sched-dot"></div><span class="sched-label">⏰ 3:00 PM IST — AUTO BRIEFING</span></div>
+  <div id="notif-banner" class="banner">
+    <span id="notif-text">🔔 Enable notifications for 6 AM & 3 PM IST daily alerts</span>
+    <button id="notif-btn" onclick="reqNotif()">ENABLE</button>
   </div>
 
-  <div id="summary-strip" style="display:none"></div>
-  <div id="categories"></div>
-  <div id="empty">Open app each morning or enable notifications for automatic alerts.</div>
+  <div id="sched-row">
+    <div class="sched-item"><div class="sched-dot"></div><span class="sched-lbl">⏰ 6:00 AM IST</span></div>
+    <div class="sched-item"><div class="sched-dot"></div><span class="sched-lbl">⏰ 3:00 PM IST</span></div>
+  </div>
+
+  <div id="summary"></div>
+  <div id="cats"></div>
+  <div id="empty">Enter your Anthropic API key above, then tap RUN NOW.</div>
   <div id="footer"><p>NOT INVESTMENT ADVICE · INFORMATIONAL ONLY · DATA FROM PUBLIC SOURCES</p></div>
 </div>
 
 <script>
-// ─── CATEGORIES ───────────────────────────────────────────────────────────────
-const CATS = [
-  { id:'monetary',   label:'Monetary Policy',          icon:'🏦', color:'#60A5FA', dim:'#1e3a5f', focus:'RBI MPC rate decisions CRR SLR OMO liquidity, US Fed FOMC decision, BOJ ECB central bank policy, India bond yields, banking liquidity surplus deficit' },
-  { id:'geo',        label:'Geopolitical',              icon:'🌐', color:'#F87171', dim:'#5f1e1e', focus:'India Pakistan military diplomatic events, India China LAC border, Middle East conflict oil supply, US India trade tariff, geopolitical risk Indian markets' },
-  { id:'macro_in',   label:'India Macro Data',          icon:'📊', color:'#A78BFA', dim:'#3b1f5f', focus:'India CPI inflation print, IIP industrial production, GDP growth, PMI manufacturing services, trade deficit, INR rupee RBI reference rate, FX reserves, fiscal deficit' },
-  { id:'macro_gl',   label:'Global Macro',              icon:'🌍', color:'#22D3EE', dim:'#1e4a5f', focus:'US CPI inflation BLS, US non farm payrolls jobs, China NBS PMI Caixin, DXY dollar index, US 10 year treasury yield, emerging market flows, global recession risk' },
-  { id:'govt',       label:'Govt Policy & Budget',      icon:'🏛️', color:'#FBBF24', dim:'#5f3d1e', focus:'CCEA cabinet approvals India, GST rate changes council, CBIC customs import duty notifications, PLI scheme disbursements, DIPAM disinvestment OFS, MSP agricultural support price, DPIIT FDI policy' },
-  { id:'filings',    label:'BSE/NSE Filings',           icon:'📋', color:'#34D399', dim:'#1e5f3a', focus:'BSE NSE board meeting outcome results, SAST promoter pledge creation invocation, insider trading PIT disclosure, Regulation 30 material event, shareholding pattern change, credit rating exchange disclosure' },
-  { id:'corporate',  label:'Corporate Results & Guidance', icon:'🎙️', color:'#FB923C', dim:'#5f2e1e', focus:'India quarterly earnings results Q4 FY26, concall management guidance, order book wins losses, revenue margin guidance, capex announcement, CFO CEO change, auditor qualification' },
-  { id:'commodity',  label:'Commodities',               icon:'🛢️', color:'#A3E635', dim:'#2e4a1e', focus:'Crude oil Brent WTI price OPEC, gold silver MCX, base metals copper aluminium zinc, agri commodity wheat rice cotton, coal natural gas, commodity price India impact' },
-  { id:'fii',        label:'FII/DII Flows',             icon:'💰', color:'#F472B6', dim:'#5f1e3a', focus:'FII DII net flows India equity, Nifty Sensex index move, FII F&O futures long short ratio, block deals bulk deals NSE BSE, MSCI rebalancing, mutual fund SIP flows' },
-  { id:'regulatory', label:'Regulatory & SEBI',         icon:'⚖️', color:'#C084FC', dim:'#3a1e5f', focus:'SEBI enforcement order show cause notice, CRISIL ICRA CARE credit rating downgrade upgrade watch negative, RBI PCA banking action, NCLT insolvency petition, proxy advisory AGM recommendation' },
-  { id:'sector',     label:'Sector & Industry News',    icon:'🏭', color:'#FB7185', dim:'#5f1e2e', focus:'India banking NPA GNPA asset quality, IT sector deal headcount visa, pharma USFDA inspection warning letter, auto EV sales monthly, infrastructure order inflow, real estate launches, FMCG rural urban demand, defence contract' },
-  { id:'hidden',     label:'Hidden & Between-the-Lines',icon:'🔍', color:'#2DD4BF', dim:'#1e5f4a', focus:'Promoter pledge invocation India, auditor resignation listed company, NCLT insolvency petition filed, MCA charge creation, related party transaction disclosure hidden, SEBI show cause settlement, Issuer Not Cooperating credit rating INC' },
+// ── CATEGORIES ───────────────────────────────────────────────────────────────
+const CATS=[
+  {id:'monetary',  label:'Monetary Policy',              icon:'🏦',color:'#60A5FA',dim:'#1e3a5f',focus:'RBI MPC rate decisions CRR SLR OMO VRRR liquidity, US Fed FOMC decision dot plot, BOJ ECB central bank policy, India bond yields G-sec, banking system liquidity surplus deficit'},
+  {id:'geo',       label:'Geopolitical',                 icon:'🌐',color:'#F87171',dim:'#5f1e1e',focus:'India Pakistan military diplomatic events ceasefire, India China LAC border, Middle East conflict oil supply Hormuz, US India trade tariff relations, geopolitical risk Indian markets rupee'},
+  {id:'macro_in',  label:'India Macro Data',             icon:'📊',color:'#A78BFA',dim:'#3b1f5f',focus:'India CPI inflation MoSPI print, IIP industrial production, GDP growth estimate, PMI manufacturing services S&P Global, trade deficit, INR rupee RBI reference rate, FX reserves, fiscal deficit'},
+  {id:'macro_gl',  label:'Global Macro',                 icon:'🌍',color:'#22D3EE',dim:'#1e4a5f',focus:'US CPI inflation BLS print, US non farm payrolls jobs data, China NBS PMI Caixin PMI, DXY dollar index, US 10 year treasury yield, emerging market FII flows, global recession risk'},
+  {id:'govt',      label:'Govt Policy & Budget',         icon:'🏛️',color:'#FBBF24',dim:'#5f3d1e',focus:'CCEA cabinet approvals India today, GST council rate changes, CBIC customs import duty notifications gazette, PLI scheme disbursements ministry, DIPAM disinvestment OFS announcement, MSP agricultural minimum support price'},
+  {id:'filings',   label:'BSE/NSE Filings',              icon:'📋',color:'#34D399',dim:'#1e5f3a',focus:'BSE NSE board meeting outcome today, SAST promoter pledge creation invocation disclosure, insider trading PIT UPSI, Regulation 30 material event order win, shareholding pattern quarterly change, credit rating exchange disclosure LODR'},
+  {id:'corporate', label:'Corporate Results & Guidance', icon:'🎙️',color:'#FB923C',dim:'#5f2e1e',focus:'India quarterly earnings results Q4 FY26 today, concall transcript management guidance language, order book wins losses capex, revenue margin EBITDA guidance cut raise, CFO CEO management change, auditor qualification emphasis'},
+  {id:'commodity', label:'Commodities',                  icon:'🛢️',color:'#A3E635',dim:'#2e4a1e',focus:'Crude oil Brent WTI price OPEC production, gold silver MCX price, base metals copper aluminium zinc steel, agri commodity wheat rice cotton sugar, coal natural gas LNG price India'},
+  {id:'fii',       label:'FII/DII Flows',                icon:'💰',color:'#F472B6',dim:'#5f1e3a',focus:'FII DII net flows India equity debt today, Nifty Sensex Bank Nifty index move, FII F&O futures long short ratio NSE, block deals bulk deals, MSCI index rebalancing quarterly, mutual fund SIP flows data'},
+  {id:'regulatory',label:'Regulatory & SEBI',            icon:'⚖️',color:'#C084FC',dim:'#3a1e5f',focus:'SEBI enforcement order adjudication show cause notice, CRISIL ICRA CARE India Ratings credit rating downgrade upgrade watch negative Issuer Not Cooperating, RBI PCA banking action, NCLT insolvency petition filed listed company'},
+  {id:'sector',    label:'Sector & Industry News',       icon:'🏭',color:'#FB7185',dim:'#5f1e2e',focus:'India banking NPA GNPA asset quality credit growth, IT sector deal TCS Infosys headcount visa H1B, pharma USFDA inspection warning letter import alert, auto monthly sales EV, infrastructure order inflow L&T, real estate launches, FMCG rural demand'},
+  {id:'hidden',    label:'Hidden & Between-the-Lines',   icon:'🔍',color:'#2DD4BF',dim:'#1e5f4a',focus:'Promoter pledge invocation India stock, auditor resignation replacement listed company, NCLT insolvency petition new filing, MCA charge creation satisfaction undisclosed debt, related party transaction new vendor customer, SEBI consent settlement order quiet, Issuer Not Cooperating INC rating'},
 ];
 
-const SYSTEM_PROMPT = `You are a senior Indian equity market analyst. Search the web for news from the LAST 24 HOURS only. Return ONLY valid JSON, no markdown, no preamble:
+const SYSPROMPT=`You are a senior Indian equity market analyst. Search the web for news from the LAST 24 HOURS ONLY. Return ONLY a valid JSON object — no markdown, no backticks, no explanation:
 
-{
-  "news_items": [
-    {
-      "headline": "Factual headline under 15 words",
-      "summary": "2-3 sentences: what happened and why it matters for Indian stocks",
-      "source": "Source name",
-      "timestamp": "e.g. Today 9:30 AM IST",
-      "impact": "POSITIVE|NEGATIVE|MIXED|NEUTRAL",
-      "impacted_stocks": [{"ticker":"NSE symbol","name":"Company name","impact":"POSITIVE|NEGATIVE","reason":"One sentence why"}],
-      "impacted_sectors": [{"sector":"Sector name","impact":"POSITIVE|NEGATIVE|MIXED","reason":"One sentence impact mechanism"}],
-      "price_action_timeframe": "IMMEDIATE|SHORT_TERM|MEDIUM_TERM|STRUCTURAL",
-      "signal_type": "HEADLINE|HIDDEN",
-      "confidence": "HIGH|MEDIUM|LOW"
-    }
-  ],
-  "category_summary": "3-4 sentences: synthesis of all news and market implication",
-  "dominant_impact": "POSITIVE|NEGATIVE|MIXED|NEUTRAL"
+{"news_items":[{"headline":"Factual headline max 15 words","summary":"2-3 sentences what happened and why it matters for Indian stocks","source":"Source name","timestamp":"e.g. Today 9:30 AM IST","impact":"POSITIVE|NEGATIVE|MIXED|NEUTRAL","impacted_stocks":[{"ticker":"NSE symbol e.g. RELIANCE","name":"Company name","impact":"POSITIVE|NEGATIVE","reason":"One sentence why"}],"impacted_sectors":[{"sector":"Sector name","impact":"POSITIVE|NEGATIVE|MIXED","reason":"One sentence mechanism"}],"price_action_timeframe":"IMMEDIATE|SHORT_TERM|MEDIUM_TERM|STRUCTURAL","signal_type":"HEADLINE|HIDDEN","confidence":"HIGH|MEDIUM|LOW"}],"category_summary":"3-4 sentences synthesis and market implication","dominant_impact":"POSITIVE|NEGATIVE|MIXED|NEUTRAL"}
+
+Timeframes: IMMEDIATE=today/hours, SHORT_TERM=1-5 days, MEDIUM_TERM=1-4 weeks, STRUCTURAL=1-6 months.
+Rules: Only last 24h news. Use NSE tickers. Never fabricate. Empty array if nothing found. Return ONLY JSON.`;
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let results={},statuses={},running=false,curFilter='ALL',doneCount=0,installPrompt=null,apiKey='';
+CATS.forEach(c=>statuses[c.id]='idle');
+
+// ── API KEY ───────────────────────────────────────────────────────────────────
+function saveKey(){
+  const v=document.getElementById('api-input').value.trim();
+  if(!v.startsWith('sk-ant-')){showApiStatus('Invalid key format — must start with sk-ant-','no');return;}
+  apiKey=v;
+  localStorage.setItem('mkt_api_key',v);
+  showApiStatus('✓ Key saved — tap RUN NOW to start','ok');
+}
+function showApiStatus(msg,type){
+  const el=document.getElementById('api-status');
+  el.textContent=msg; el.className=type==='ok'?'api-ok':'api-no';
+}
+function loadKey(){
+  const k=localStorage.getItem('mkt_api_key')||'';
+  if(k){apiKey=k;document.getElementById('api-input').value=k;showApiStatus('✓ Key loaded','ok');}
 }
 
-Timeframes: IMMEDIATE=today, SHORT_TERM=1-5 days, MEDIUM_TERM=1-4 weeks, STRUCTURAL=1-6 months.
-Use NSE tickers. Never fabricate. Empty array if nothing found in last 24h. Return only JSON.`;
+// ── FETCH CAT ────────────────────────────────────────────────────────────────
+async function fetchCat(cat){
+  if(!apiKey) throw new Error('No API key');
+  const today=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Kolkata'});
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let results = {}, statuses = {}, running = false, currentFilter = 'ALL', doneCount = 0, installPrompt = null;
-CATS.forEach(c => statuses[c.id] = 'idle');
-
-// ─── API ──────────────────────────────────────────────────────────────────────
-async function fetchCat(cat) {
-  const today = new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata' });
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: `Today is ${today} IST. Find last 24 hours news for:\nCATEGORY: ${cat.label}\nSEARCH FOCUS: ${cat.focus}\n\nSearch the web and return structured JSON analysis.` }],
-    }),
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
-  const s = text.indexOf('{'), e = text.lastIndexOf('}');
-  if (s === -1) throw new Error('No JSON');
-  return JSON.parse(text.slice(s, e + 1));
-}
-
-// ─── RUN ALL ─────────────────────────────────────────────────────────────────
-async function runAll() {
-  if (running) return;
-  running = true; doneCount = 0;
-  results = {}; CATS.forEach(c => { statuses[c.id] = 'idle'; });
-  document.getElementById('run-btn').disabled = true;
-  document.getElementById('run-btn').textContent = '⟳ RUNNING...';
-  document.getElementById('empty').style.display = 'none';
-  renderAll();
-
-  for (let i = 0; i < CATS.length; i++) {
-    const cat = CATS[i];
-    statuses[cat.id] = 'loading';
-    updateProgress(cat.label, i, CATS.length);
-    renderCat(cat);
-    try {
-      results[cat.id] = await fetchCat(cat);
-      statuses[cat.id] = 'done';
-    } catch(e) {
-      statuses[cat.id] = 'error';
-      console.error(cat.label, e);
-    }
-    doneCount++;
-    updateProgress(cat.label, doneCount, CATS.length);
-    renderCat(cat);
-    renderSummary();
-    if (i < CATS.length - 1) await sleep(700);
-  }
-
-  running = false;
-  document.getElementById('run-btn').disabled = false;
-  document.getElementById('run-btn').textContent = '↺ RUN NOW';
-  updateProgress('✓ COMPLETE', CATS.length, CATS.length);
-  const now = new Date().toLocaleTimeString('en-IN', { timeZone:'Asia/Kolkata', hour:'2-digit', minute:'2-digit' });
-  document.getElementById('last-run').textContent = `Last run ${now} IST`;
-  localStorage.setItem('lastRun', Date.now());
-  localStorage.setItem('lastResults', JSON.stringify(results));
-  localStorage.setItem('lastStatuses', JSON.stringify(statuses));
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ─── PROGRESS ─────────────────────────────────────────────────────────────────
-function updateProgress(label, done, total) {
-  document.getElementById('progress-active').textContent = done === total ? '✓ ALL COMPLETE' : `FETCHING: ${label}`;
-  document.getElementById('progress-count').textContent = `${done}/${total}`;
-  const pct = total > 0 ? (done / total) * 100 : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  if (done === total && total > 0) {
-    document.getElementById('progress-fill').style.background = 'linear-gradient(90deg,#4ade80,#34d399)';
-  }
-}
-
-// ─── IMPACT HELPERS ───────────────────────────────────────────────────────────
-function impactClass(v) { return {POSITIVE:'pos',NEGATIVE:'neg',MIXED:'mix',NEUTRAL:'neu'}[v]||'neu'; }
-function impactSym(v)   { return {POSITIVE:'▲',NEGATIVE:'▼',MIXED:'◆',NEUTRAL:'●'}[v]||'●'; }
-function tfClass(v)     { return {IMMEDIATE:'tf-imm',SHORT_TERM:'tf-st',MEDIUM_TERM:'tf-mt',STRUCTURAL:'tf-str'}[v]||'tf-st'; }
-function tfLabel(v)     { return {IMMEDIATE:'⚡ IMMEDIATE',SHORT_TERM:'📅 1–5 DAYS',MEDIUM_TERM:'📆 1–4 WEEKS',STRUCTURAL:'🗓 1–6 MONTHS'}[v]||v; }
-function confClass(v)   { return {HIGH:'conf-high',MEDIUM:'conf-med',LOW:'conf-low'}[v]||''; }
-
-function badgeHtml(impact) {
-  const c = impactClass(impact);
-  return `<span class="badge badge-${c}">${impactSym(impact)} ${impact}</span>`;
-}
-
-// ─── RENDER SUMMARY ───────────────────────────────────────────────────────────
-function renderSummary() {
-  const allItems = Object.values(results).flatMap(r => r?.news_items || []);
-  const strip = document.getElementById('summary-strip');
-  if (!allItems.length) { strip.style.display = 'none'; return; }
-  strip.style.display = 'flex';
-  const pos = allItems.filter(i => i.impact==='POSITIVE').length;
-  const neg = allItems.filter(i => i.impact==='NEGATIVE').length;
-  const mix = allItems.filter(i => i.impact==='MIXED').length;
-  const hid = allItems.filter(i => i.signal_type==='HIDDEN').length;
-  const imm = allItems.filter(i => i.price_action_timeframe==='IMMEDIATE').length;
-
-  const topSector = (imp) => {
-    const m = {};
-    allItems.filter(i=>i.impact===imp).flatMap(i=>i.impacted_sectors||[]).forEach(s=>{m[s.sector]=(m[s.sector]||0)+1;});
-    return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+  // Use allorigins proxy to bypass CORS
+  const payload={
+    model:'claude-sonnet-4-20250514',
+    max_tokens:4000,
+    tools:[{type:'web_search_20250305',name:'web_search'}],
+    system:SYSPROMPT,
+    messages:[{role:'user',content:`Today is ${today} IST. Find last 24 hours news:\nCATEGORY: ${cat.label}\nSEARCH FOCUS: ${cat.focus}\n\nSearch and return JSON analysis.`}]
   };
 
-  strip.innerHTML = [
-    { label:'TOTAL', val: allItems.length, color:'#9ca3af', sm:false },
-    { label:'▲ POS', val: pos, color:'#4ade80', sm:false },
-    { label:'▼ NEG', val: neg, color:'#f87171', sm:false },
-    { label:'◆ MIX', val: mix, color:'#fbbf24', sm:false },
-    { label:'🔍 HIDDEN', val: hid, color:'#2DD4BF', sm:false },
-    { label:'⚡ NOW', val: imm, color:'#FF4444', sm:false },
-    { label:'TOP BULL', val: topSector('POSITIVE'), color:'#4ade80', sm:true },
-    { label:'TOP BEAR', val: topSector('NEGATIVE'), color:'#f87171', sm:true },
-  ].map(s=>`<div class="stat-box"><span class="stat-label">${s.label}</span><span class="stat-val${s.sm?' sm':''}" style="color:${s.color}">${s.val}</span></div>`).join('');
+  // Try direct first (works if CORS is allowed), fallback to proxy
+  let res;
+  try {
+    res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify(payload)
+    });
+  } catch(e) {
+    // Fallback: allorigins proxy
+    const encoded=encodeURIComponent(JSON.stringify(payload));
+    res=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://api.anthropic.com/v1/messages')}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url:'https://api.anthropic.com/v1/messages',method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify(payload)})
+    });
+  }
+
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data=await res.json();
+  const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+  const s=text.indexOf('{'),e=text.lastIndexOf('}');
+  if(s===-1) throw new Error('No JSON');
+  return JSON.parse(text.slice(s,e+1));
 }
 
-// ─── RENDER CATEGORY ──────────────────────────────────────────────────────────
-function renderCat(cat) {
-  let el = document.getElementById('cat-' + cat.id);
-  if (!el) { el = document.createElement('div'); el.id = 'cat-' + cat.id; el.className = 'cat-block'; document.getElementById('categories').appendChild(el); }
+// ── RUN ALL ───────────────────────────────────────────────────────────────────
+async function runAll(){
+  if(running) return;
+  if(!apiKey){showApiStatus('Please enter your Anthropic API key first','no');document.getElementById('api-input').focus();return;}
+  running=true;doneCount=0;
+  results={};CATS.forEach(c=>{statuses[c.id]='idle';});
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.textContent='⟳ RUNNING...';
+  document.getElementById('empty').style.display='none';
+  renderAll();
 
-  const status = statuses[cat.id];
-  const result = results[cat.id];
-  const items  = result?.news_items || [];
-  const open   = el.dataset.open === '1';
-  const pos    = items.filter(i=>i.impact==='POSITIVE').length;
-  const neg    = items.filter(i=>i.impact==='NEGATIVE').length;
-  const dom    = result?.dominant_impact || 'NEUTRAL';
+  for(let i=0;i<CATS.length;i++){
+    const cat=CATS[i];
+    statuses[cat.id]='loading';
+    setProg(cat.label,i,CATS.length);
+    renderCat(cat);
+    try{
+      results[cat.id]=await fetchCat(cat);
+      statuses[cat.id]='done';
+    }catch(err){
+      statuses[cat.id]='error';
+      console.error(cat.label,err);
+    }
+    doneCount++;
+    setProg(cat.label,doneCount,CATS.length);
+    renderCat(cat);renderSum();
+    if(i<CATS.length-1) await sleep(800);
+  }
 
-  let metaHtml = '';
-  if (status==='loading') metaHtml = `<span class="badge-load">⟳ FETCHING</span>`;
-  else if (status==='error') metaHtml = `<span class="badge-err">⚠ FAILED</span>`;
-  else if (status==='done' && !items.length) metaHtml = `<span class="badge-none">— NO NEWS —</span>`;
-  else if (status==='done') metaHtml = `
-    ${badgeHtml(dom)}
-    ${pos>0?`<span class="count-pos">▲${pos}</span>`:''}
-    ${neg>0?`<span class="count-neg">▼${neg}</span>`:''}
-    <span style="font-size:9px;color:#2a2a2a;font-family:monospace">${items.length} items</span>
-  `;
+  running=false;btn.disabled=false;btn.textContent='↺ RUN NOW';
+  setProg('✓ COMPLETE',CATS.length,CATS.length);
+  document.getElementById('prog-fill').style.background='linear-gradient(90deg,#4ade80,#34d399)';
+  const now=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-run').textContent=`Last run ${now} IST`;
+  try{localStorage.setItem('mkt_last_run',Date.now());localStorage.setItem('mkt_results',JSON.stringify(results));localStorage.setItem('mkt_statuses',JSON.stringify(statuses));}catch(e){}
+}
 
-  const canOpen = items.length > 0;
-  el.style.borderColor = open ? cat.color+'33' : '#161616';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-  el.innerHTML = `
-    <div class="cat-header" onclick="${canOpen?'toggleCat(\''+cat.id+'\')':''}">
-      <div class="cat-icon" style="background:${cat.dim}">${cat.icon}</div>
-      <div style="flex:1;min-width:0">
-        <div class="cat-title">${cat.label}</div>
-        <div class="cat-sub">${cat.focus.slice(0,55)}…</div>
-      </div>
-      <div class="cat-meta">${metaHtml}${canOpen?`<span class="cat-chevron">${open?'▲':'▼'}</span>`:''}</div>
+// ── PROGRESS ──────────────────────────────────────────────────────────────────
+function setProg(lbl,done,total){
+  document.getElementById('prog-label').textContent=done===total?'✓ ALL COMPLETE':`FETCHING: ${lbl}`;
+  document.getElementById('prog-count').textContent=`${done}/${total}`;
+  document.getElementById('prog-fill').style.width=((done/total)*100)+'%';
+}
+
+// ── IMPACT HELPERS ────────────────────────────────────────────────────────────
+const IC={POSITIVE:'pos',NEGATIVE:'neg',MIXED:'mix',NEUTRAL:'neu'};
+const IS={POSITIVE:'▲',NEGATIVE:'▼',MIXED:'◆',NEUTRAL:'●'};
+const TC={IMMEDIATE:'tf-i',SHORT_TERM:'tf-s',MEDIUM_TERM:'tf-m',STRUCTURAL:'tf-l'};
+const TL={IMMEDIATE:'⚡ TODAY',SHORT_TERM:'📅 1–5D',MEDIUM_TERM:'📆 1–4W',STRUCTURAL:'🗓 1–6M'};
+const CC={HIGH:'ctag-h',MEDIUM:'ctag-m',LOW:'ctag-l'};
+function bdg(imp){const c=IC[imp]||'neu';return`<span class="bdg bdg-${c}">${IS[imp]||'●'} ${imp}</span>`;}
+
+// ── SUMMARY ───────────────────────────────────────────────────────────────────
+function renderSum(){
+  const all=Object.values(results).flatMap(r=>r?.news_items||[]);
+  const el=document.getElementById('summary');
+  if(!all.length){el.style.display='none';return;}
+  el.style.display='flex';
+  const pos=all.filter(i=>i.impact==='POSITIVE').length;
+  const neg=all.filter(i=>i.impact==='NEGATIVE').length;
+  const mix=all.filter(i=>i.impact==='MIXED').length;
+  const hid=all.filter(i=>i.signal_type==='HIDDEN').length;
+  const imm=all.filter(i=>i.price_action_timeframe==='IMMEDIATE').length;
+  const top=imp=>{const m={};all.filter(i=>i.impact===imp).flatMap(i=>i.impacted_sectors||[]).forEach(s=>{m[s.sector]=(m[s.sector]||0)+1;});return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';};
+  el.innerHTML=[
+    {l:'TOTAL',v:all.length,c:'#9ca3af'},
+    {l:'▲ POS',v:pos,c:'#4ade80'},
+    {l:'▼ NEG',v:neg,c:'#f87171'},
+    {l:'◆ MIX',v:mix,c:'#fbbf24'},
+    {l:'🔍 HID',v:hid,c:'#2DD4BF'},
+    {l:'⚡ NOW',v:imm,c:'#FF4444'},
+    {l:'TOP BULL',v:top('POSITIVE'),c:'#4ade80',sm:1},
+    {l:'TOP BEAR',v:top('NEGATIVE'),c:'#f87171',sm:1},
+  ].map(s=>`<div class="sbox"><span class="slbl">${s.l}</span><span class="sval${s.sm?' sm':''}" style="color:${s.c}">${s.v}</span></div>`).join('');
+}
+
+// ── RENDER CATEGORY ───────────────────────────────────────────────────────────
+function renderCat(cat){
+  let el=document.getElementById('c-'+cat.id);
+  if(!el){el=document.createElement('div');el.id='c-'+cat.id;el.className='cat';document.getElementById('cats').appendChild(el);}
+  const st=statuses[cat.id],r=results[cat.id],items=r?.news_items||[];
+  const open=el.dataset.open==='1';
+  const pos=items.filter(i=>i.impact==='POSITIVE').length;
+  const neg=items.filter(i=>i.impact==='NEGATIVE').length;
+  const dom=r?.dominant_impact||'NEUTRAL';
+  let meta='';
+  if(st==='loading') meta=`<span class="ld">⟳ FETCHING</span>`;
+  else if(st==='error') meta=`<span class="er">⚠ FAILED</span>`;
+  else if(st==='done'&&!items.length) meta=`<span class="nn">— NONE —</span>`;
+  else if(st==='done') meta=`${bdg(dom)}${pos>0?`<span class="cp">▲${pos}</span>`:''}${neg>0?`<span class="cn">▼${neg}</span>`:''}`;
+  const can=items.length>0;
+  el.style.borderColor=open?cat.color+'33':'#161616';
+  el.innerHTML=`
+    <div class="cat-hdr" onclick="${can?`toggleCat('${cat.id}')`:''}" style="cursor:${can?'pointer':'default'}">
+      <div class="cat-ico" style="background:${cat.dim}">${cat.icon}</div>
+      <div style="flex:1;min-width:0"><div class="cat-ttl">${cat.label}</div><div class="cat-sub">${cat.focus.slice(0,50)}…</div></div>
+      <div class="cat-meta">${meta}${can?`<span class="chev">${open?'▲':'▼'}</span>`:''}</div>
     </div>
-    ${open && result?.category_summary ? `<div class="cat-summary">${result.category_summary}</div>` : ''}
-    ${open && items.length ? `<div class="cat-items">${items.map((item,i)=>newsCardHtml(item,i)).join('')}</div>` : ''}
+    ${open&&r?.category_summary?`<div class="cat-sum">${r.category_summary}</div>`:''}
+    ${open&&items.length?`<div class="cat-items">${items.map((item,i)=>ncHtml(item,i,cat.id)).join('')}</div>`:''}
   `;
 }
 
-function toggleCat(id) {
-  const el = document.getElementById('cat-'+id);
-  el.dataset.open = el.dataset.open==='1'?'0':'1';
+function toggleCat(id){
+  const el=document.getElementById('c-'+id);
+  el.dataset.open=el.dataset.open==='1'?'0':'1';
   renderCat(CATS.find(c=>c.id===id));
 }
 
-function toggleNews(id, idx) {
-  const det = document.getElementById(`nd-${id}-${idx}`);
-  const chev = document.getElementById(`nc-${id}-${idx}`);
-  if (!det||!chev) return;
-  const open = det.style.display==='block';
-  det.style.display = open?'none':'block';
-  chev.textContent = open?'▼':'▲';
-}
-
-// ─── NEWS CARD HTML ───────────────────────────────────────────────────────────
-function newsCardHtml(item, idx) {
-  const catId = Object.keys(results).find(k => results[k]?.news_items?.includes(item)) || 'x';
-  const imp = impactClass(item.impact);
-  const stocks = (item.impacted_stocks||[]).map(s=>`
-    <div class="impact-pill">
-      <span class="pill-ticker">${s.ticker}</span>
-      ${badgeHtml(s.impact)}
-      <span class="pill-reason">${s.reason||''}</span>
-    </div>`).join('');
-  const sectors = (item.impacted_sectors||[]).map(s=>`
-    <div class="impact-pill">
-      <span class="pill-name">${s.sector}</span>
-      ${badgeHtml(s.impact)}
-      <span class="pill-reason">${s.reason||''}</span>
-    </div>`).join('');
-
-  // Use array index as unique key since we don't have catId easily here
-  const uid = `${Date.now()}-${idx}`;
-
-  return `<div class="news-card ${imp}">
-    <div class="news-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('.news-chevron').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'">
-      <span class="news-idx">${String(idx+1).padStart(2,'0')}</span>
-      <div class="news-main">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;margin-bottom:5px">
-          <span class="news-headline" style="flex:1 1 150px">${item.headline}</span>
-          ${badgeHtml(item.impact)}
+// ── NEWS CARD HTML ────────────────────────────────────────────────────────────
+function ncHtml(item,idx,cid){
+  const ic=IC[item.impact]||'neu';
+  const stocks=(item.impacted_stocks||[]).map(s=>`<div class="ip"><span class="itkr">${s.ticker}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
+  const sects=(item.impacted_sectors||[]).map(s=>`<div class="ip"><span class="iname">${s.sector}</span>${bdg(s.impact)}<span class="ireason">${s.reason||''}</span></div>`).join('');
+  const uid=`${cid}-${idx}`;
+  return`<div class="nc ${ic}">
+    <div class="nh" onclick="toggleNews('${uid}')">
+      <span class="nidx">${String(idx+1).padStart(2,'0')}</span>
+      <div class="nm">
+        <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:flex-start;margin-bottom:4px">
+          <span class="nhl" style="flex:1 1 130px">${item.headline}</span>${bdg(item.impact)}
         </div>
-        <div class="news-tags">
-          <span class="tf ${tfClass(item.price_action_timeframe)}">${tfLabel(item.price_action_timeframe)}</span>
-          ${item.signal_type==='HIDDEN'?'<span class="hidden-tag">🔍 HIDDEN</span>':''}
-          ${item.confidence?`<span class="tf ${confClass(item.confidence)}" style="font-size:8px">${item.confidence} CONF</span>`:''}
-          ${item.source?`<span class="source-tag">${item.source}</span>`:''}
-          ${item.timestamp?`<span class="source-tag">${item.timestamp}</span>`:''}
+        <div class="ntags">
+          <span class="tf ${TC[item.price_action_timeframe]||'tf-s'}">${TL[item.price_action_timeframe]||''}</span>
+          ${item.signal_type==='HIDDEN'?'<span class="htag">🔍 HIDDEN</span>':''}
+          ${item.confidence?`<span class="ctag ${CC[item.confidence]||''}">${item.confidence}</span>`:''}
+          ${item.source?`<span class="stag">${item.source}</span>`:''}
         </div>
       </div>
-      <span class="news-chevron">▼</span>
+      <span class="nchev" id="nc-${uid}">▼</span>
     </div>
-    <div class="news-detail" style="display:none">
-      <p class="news-summary">${item.summary||''}</p>
-      ${stocks?`<div class="impact-section"><div class="impact-label">STOCKS IMPACTED</div><div class="impact-pills">${stocks}</div></div>`:''}
-      ${sectors?`<div class="impact-section"><div class="impact-label">SECTORS IMPACTED</div><div class="impact-pills">${sectors}</div></div>`:''}
+    <div class="nd" id="nd-${uid}">
+      <p class="nsum">${item.summary||''}</p>
+      ${stocks?`<div class="isec"><div class="ilbl">STOCKS</div><div class="ipills">${stocks}</div></div>`:''}
+      ${sects?`<div class="isec"><div class="ilbl">SECTORS</div><div class="ipills">${sects}</div></div>`:''}
     </div>
   </div>`;
 }
 
-// ─── RENDER ALL ───────────────────────────────────────────────────────────────
-function renderAll() {
-  const container = document.getElementById('categories');
-  container.innerHTML = '';
-  const filtered = currentFilter==='ALL' ? CATS : CATS.filter(c=>{
-    const r = results[c.id];
-    return r?.news_items?.length && r.dominant_impact===currentFilter;
-  });
-  filtered.forEach(cat => renderCat(cat));
-  renderSummary();
+function toggleNews(uid){
+  const d=document.getElementById('nd-'+uid),c=document.getElementById('nc-'+uid);
+  if(!d||!c) return;
+  const o=d.style.display==='block';
+  d.style.display=o?'none':'block';c.textContent=o?'▼':'▲';
 }
 
-function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  const map = { ALL:0, POSITIVE:1, NEGATIVE:2, MIXED:3 };
-  document.querySelectorAll('.filter-btn')[map[f]]?.classList.add('active');
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(){
+  document.getElementById('cats').innerHTML='';
+  const show=curFilter==='ALL'?CATS:CATS.filter(c=>{const r=results[c.id];return r?.news_items?.length&&r.dominant_impact===curFilter;});
+  show.forEach(cat=>renderCat(cat));
+  renderSum();
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  const map={ALL:0,POSITIVE:1,NEGATIVE:2,MIXED:3};
+  const btns=document.querySelectorAll('.fbtn');
+  btns[map[f]]?.classList.add('on');
   renderAll();
 }
 
-// ─── LOAD CACHED RESULTS ─────────────────────────────────────────────────────
-function loadCache() {
-  try {
-    const lastRun = localStorage.getItem('lastRun');
-    const age = Date.now() - parseInt(lastRun||0);
-    if (age < 6 * 60 * 60 * 1000) { // within 6 hours
-      results = JSON.parse(localStorage.getItem('lastResults')||'{}');
-      statuses = JSON.parse(localStorage.getItem('lastStatuses')||'{}');
-      const t = new Date(parseInt(lastRun)).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
-      document.getElementById('last-run').textContent = `Last run ${t} IST (cached)`;
-      document.getElementById('empty').style.display = 'none';
-      renderAll();
-      return true;
+// ── CACHE ─────────────────────────────────────────────────────────────────────
+function loadCache(){
+  try{
+    const lr=localStorage.getItem('mkt_last_run');
+    if(Date.now()-parseInt(lr||0)<6*3600000){
+      results=JSON.parse(localStorage.getItem('mkt_results')||'{}');
+      statuses=JSON.parse(localStorage.getItem('mkt_statuses')||'{}');
+      const t=new Date(parseInt(lr)).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
+      document.getElementById('last-run').textContent=`Last run ${t} IST (cached)`;
+      document.getElementById('empty').style.display='none';
+      renderAll();return true;
     }
-  } catch(e) {}
-  return false;
+  }catch(e){}return false;
 }
 
-// ─── SCHEDULING (check every 5 min) ──────────────────────────────────────────
-function checkSchedule() {
-  const now = new Date();
-  const ist = new Date(now.getTime() + 5.5*3600000);
-  const h = ist.getUTCHours(), m = ist.getUTCMinutes();
-  const lastRun = parseInt(localStorage.getItem('lastRun')||0);
-  const lastRunAge = Date.now() - lastRun;
+// ── SCHEDULING ────────────────────────────────────────────────────────────────
+setInterval(()=>{
+  if(!apiKey||running) return;
+  const ist=new Date(Date.now()+5.5*3600000);
+  const h=ist.getUTCHours(),m=ist.getUTCMinutes();
+  const lr=parseInt(localStorage.getItem('mkt_last_run')||0);
+  if((h===6||h===15)&&m<10&&Date.now()-lr>30*60*1000) runAll();
+},5*60*1000);
 
-  // Run if 6 AM or 3 PM IST and not run in last 30 min
-  if ((h===6||h===15) && m < 10 && lastRunAge > 30*60*1000) {
-    runAll();
-  }
-}
-setInterval(checkSchedule, 5 * 60 * 1000);
-
-// ─── SERVICE WORKER ───────────────────────────────────────────────────────────
-async function registerSW() {
-  if ('serviceWorker' in navigator) {
-    try {
-      const reg = await navigator.serviceWorker.register('/sw.js');
-      console.log('SW registered');
-
-      // Periodic sync for background notifications
-      if ('periodicSync' in reg) {
-        const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
-        if (status.state === 'granted') {
-          await reg.periodicSync.register('market-briefing', { minInterval: 4 * 60 * 60 * 1000 });
-        }
-      }
-
-      // Listen for messages from SW
-      navigator.serviceWorker.addEventListener('message', e => {
-        if (e.data?.type === 'AUTO_RUN') runAll();
-      });
-    } catch(e) { console.log('SW failed:', e); }
+// ── SERVICE WORKER ────────────────────────────────────────────────────────────
+async function initSW(){
+  if('serviceWorker' in navigator){
+    try{
+      await navigator.serviceWorker.register('/DailyNews/sw.js');
+      navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.type==='AUTO_RUN') runAll();});
+    }catch(e){console.log('SW:',e);}
   }
 }
 
-// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
-async function requestNotifications() {
-  if (!('Notification' in window)) { alert('Notifications not supported on this browser.'); return; }
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+async function reqNotif(){
+  if(!('Notification' in window)){alert('Notifications not supported on this browser.');return;}
+  const p=await Notification.requestPermission();
+  if(p==='granted'){
     document.getElementById('notif-banner').classList.remove('show');
-    document.getElementById('schedule-row').style.display = 'flex';
-    localStorage.setItem('notifEnabled','1');
-    // Send immediate confirmation
-    new Notification('🇮🇳 India Market Intelligence', {
-      body: 'Notifications enabled! You\'ll be alerted at 6 AM and 3 PM IST daily.',
-      icon: '/icon-192.png',
-    });
-    // Schedule check via SW
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type:'SCHEDULE_CHECK' });
-    }
+    document.getElementById('sched-row').style.display='flex';
+    localStorage.setItem('mkt_notif','1');
+    new Notification('🇮🇳 India Market Intelligence',{body:'Alerts set for 6 AM & 3 PM IST daily.',icon:'/DailyNews/icon-192.png'});
   }
 }
 
-// ─── INSTALL PROMPT ───────────────────────────────────────────────────────────
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  installPrompt = e;
-  document.getElementById('install-banner').classList.add('show');
-});
+// ── INSTALL ───────────────────────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;document.getElementById('inst-banner').classList.add('show');});
+function triggerInstall(){if(!installPrompt)return;installPrompt.prompt();installPrompt.userChoice.then(r=>{if(r.outcome==='accepted')document.getElementById('inst-banner').classList.remove('show');installPrompt=null;});}
+window.addEventListener('appinstalled',()=>document.getElementById('inst-banner').classList.remove('show'));
 
-function triggerInstall() {
-  if (!installPrompt) return;
-  installPrompt.prompt();
-  installPrompt.userChoice.then(r => {
-    if (r.outcome==='accepted') document.getElementById('install-banner').classList.remove('show');
-    installPrompt = null;
-  });
-}
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('install-banner').classList.remove('show');
-});
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  await registerSW();
-
-  // Show notification banner if not yet enabled
-  if (localStorage.getItem('notifEnabled')==='1' && Notification.permission==='granted') {
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',async()=>{
+  loadKey();
+  await initSW();
+  if(localStorage.getItem('mkt_notif')==='1'&&Notification.permission==='granted'){
     document.getElementById('notif-banner').classList.remove('show');
-    document.getElementById('schedule-row').style.display = 'flex';
-  } else if (Notification.permission !== 'denied') {
+    document.getElementById('sched-row').style.display='flex';
+  } else if(Notification.permission!=='denied'){
     document.getElementById('notif-banner').classList.add('show');
   }
-
-  // Load cache or auto-run
-  const hadCache = loadCache();
-  const autoRun = new URLSearchParams(location.search).get('autorun')==='1';
-
-  if (autoRun || !hadCache) {
-    setTimeout(runAll, 500);
-  }
+  const hadCache=loadCache();
+  if(!hadCache) document.getElementById('empty').style.display='block';
 });
 </script>
 </body>
